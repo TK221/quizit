@@ -1,0 +1,21 @@
+version: "3"
+services:
+  nextjs:
+    build:
+      context: .
+    ports:
+      - 3000:3000
+    environment: 
+      NEXTAUTH_SECRET: "NEXTAUTHSECRET"
+      NEXTAUTH_URL: "http://localhost:3000"
+      DISCORD_CLIENT_ID: "id"
+      DISCORD_CLIENT_SECRET: "DISCORDSECRET"
+      DATABASE_URL: "postgresql://postgres:DBPASSWORD@db:5432/postgres"
+  
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: DBPASSWORD

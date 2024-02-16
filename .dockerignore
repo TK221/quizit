@@ -1,0 +1,11 @@
+Dockerfile
+.dockerignore
+node_modules
+*.md
+.git
+*.db
+*.env
+.env
+.next/standalone/.env
+docker-compose.yml
+docker-compose.example.yml
