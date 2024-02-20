@@ -12,7 +12,7 @@ export const env = createEnv({
       .url()
       .refine(
         (str) => !str.includes("YOUR_MYSQL_URL_HERE"),
-        "You forgot to change the default URL"
+        "You forgot to change the default URL",
       ),
     NODE_ENV: z
       .enum(["development", "test", "production"])
@@ -26,10 +26,17 @@ export const env = createEnv({
       // Since NextAuth.js automatically uses the VERCEL_URL if present.
       (str) => process.env.VERCEL_URL ?? str,
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
-      process.env.VERCEL ? z.string() : z.string().url()
+      process.env.VERCEL ? z.string() : z.string().url(),
     ),
     DISCORD_CLIENT_ID: z.string(),
     DISCORD_CLIENT_SECRET: z.string(),
+    PUSHER_APP_ID: z.string(),
+    PUSHER_APP_KEY: z.string(),
+    PUSHER_APP_HOST: z.string(),
+    PUSHER_APP_PORT: z.string(),
+    PUSHER_APP_SECRET: z.string(),
+    CLIENT_PUSHER_APP_HOST: z.string(),
+    CLIENT_PUSHER_APP_PORT: z.number().int().positive(),
   },
 
   /**
@@ -52,6 +59,13 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
     DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
+    PUSHER_APP_ID: process.env.PUSHER_APP_ID,
+    PUSHER_APP_KEY: process.env.PUSHER_APP_KEY,
+    PUSHER_APP_HOST: process.env.PUSHER_APP_HOST,
+    PUSHER_APP_PORT: process.env.PUSHER_APP_PORT,
+    PUSHER_APP_SECRET: process.env.PUSHER_APP_SECRET,
+    CLIENT_PUSHER_APP_HOST: process.env.CLIENT_PUSHER_APP_HOST,
+    CLIENT_PUSHER_APP_PORT: Number(process.env.CLIENT_PUSHER_APP_PORT),
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
