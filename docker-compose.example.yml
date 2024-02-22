@@ -10,7 +10,14 @@ services:
       NEXTAUTH_URL: "http://localhost:3000"
       DISCORD_CLIENT_ID: "id"
       DISCORD_CLIENT_SECRET: "DISCORDSECRET"
-      DATABASE_URL: "postgresql://postgres:DBPASSWORD@db:5432/postgres"
+      DATABASE_URL: "postgresql://postgres:DBPASSWORD@db:5432/quizit"
+      PUSHER_APP_ID: "REPLACE_ME"
+      PUSHER_APP_KEY: "REPLACE_ME"
+      PUSHER_APP_SECRET: "REPLACE_ME"
+      PUSHER_APP_HOST: "pusher"
+      PUSHER_APP_PORT: 6001
+      CLIENT_PUSHER_APP_HOST: "localhost"
+      CLIENT_PUSHER_APP_PORT: 6001
   
   db:
     image: postgres
@@ -20,3 +27,13 @@ services:
     environment:
       POSTGRES_PASSWORD: DBPASSWORD
       POSTGRES_DB: quizit
+
+  pusher:
+    image: "quay.io/soketi/soketi:1.4-16-debian"
+    environment:
+      - SOKETI_DEFAULT_APP_ID=REPLACE_WITH_YOUR_APP_ID
+      - SOKETI_DEFAULT_APP_KEY=REPLACE_WITH_YOUR_APP_KEY
+      - SOKETI_DEFAULT_APP_SECRET=REPLACE_WITH_YOUR_APP_SECRET
+    ports:
+      - "6001:6001"
+      - "9601:9601"

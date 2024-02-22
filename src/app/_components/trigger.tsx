@@ -27,7 +27,7 @@ const Trigger = (props: { pusherSettings: PusherClientSettings }) => {
   return (
     <div className="flex h-screen flex-col items-center justify-center ">
       <div className="flex flex-col space-y-2 rounded border-2 p-8">
-        <button onClick={() => lobbyCreate.mutate({ name: "mark" })}>
+        <button onClick={() => lobbyCreate.mutate({ username: "mark" })}>
           Trigger
         </button>
       </div>

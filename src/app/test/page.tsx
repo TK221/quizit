@@ -1,8 +1,11 @@
 import React from "react";
 import Trigger from "../_components/trigger";
 import { env } from "~/env";
+import { unstable_noStore } from "next/cache";
 
 const Test = () => {
+  unstable_noStore();
+
   return (
     <div>
       <Trigger

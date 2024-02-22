@@ -3,6 +3,7 @@ export interface Player {
   user_id: string;
   username: string;
   score: number;
+  lobby_id: string;
 }
 
 export interface Lobby {
@@ -17,7 +18,10 @@ export interface Lobby {
 const games = new Map<string, Lobby>();
 
 // --- Game Logic ---
-export function createLobby(game_master: Player): string | undefined {
+export function createLobby(
+  user_id: string,
+  username: string,
+): string | undefined {
   const lobby_id = Math.random().toString(36).slice(2);
 
   if (isLobbyExist(lobby_id)) return undefined;
@@ -25,7 +29,12 @@ export function createLobby(game_master: Player): string | undefined {
   games.set(lobby_id, {
     lobby_id,
     players: [],
-    game_master,
+    game_master: {
+      user_id: user_id,
+      username,
+      score: 0,
+      lobby_id,
+    },
     open: false,
     playerBuzzingList: [],
   });
@@ -39,15 +48,16 @@ export function getLobby(lobby_id: string): Lobby | undefined {
 
 export function joinLobby(
   lobby_id: string,
-  player: Player,
-): string | undefined {
+  user_id: string,
+  username: string,
+): Lobby | undefined {
   const lobby = getLobby(lobby_id);
 
-  if (!lobby || isPlayerInLobby(lobby, player.user_id)) return undefined;
+  if (!lobby || isPlayerInLobby(lobby, user_id)) return undefined;
 
-  lobby.players.push(player);
+  lobby.players.push({ lobby_id, user_id, username, score: 0 });
 
-  return lobby.lobby_id;
+  return lobby;
 }
 
 export function leaveLobby(lobby_id: string, player: string): boolean {
