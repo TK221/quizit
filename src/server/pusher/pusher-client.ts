@@ -6,7 +6,7 @@ export interface PusherClientSettings {
   app_port: number;
 }
 
-const pusher = (
+const pusherInit = (
   settings: PusherClientSettings,
   authEndpoint?: string,
 ): Pusher => {
@@ -23,4 +23,4 @@ const pusher = (
   });
 };
 
-export default pusher;
+export default pusherInit;

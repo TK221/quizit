@@ -1,15 +1,15 @@
 // --- Game Types ---
 export interface Player {
-  user_id: string;
+  userId: string;
   username: string;
   score: number;
-  lobby_id: string;
+  lobbyId: string;
 }
 
 export interface Lobby {
-  lobby_id: string;
+  id: string;
   players: Player[];
-  game_master: Player;
+  gameMaster: string;
   open: boolean;
   playerBuzzingList: Player[];
 }
@@ -18,84 +18,81 @@ export interface Lobby {
 const games = new Map<string, Lobby>();
 
 // --- Game Logic ---
-export function createLobby(
-  user_id: string,
-  username: string,
-): string | undefined {
-  const lobby_id = Math.random().toString(36).slice(2);
+export function createLobby(userId: string): string | undefined {
+  const lobbyId = Math.random().toString(36).slice(2);
 
-  if (isLobbyExist(lobby_id)) return undefined;
+  if (isLobbyExist(lobbyId)) return undefined;
 
-  games.set(lobby_id, {
-    lobby_id,
+  games.set(lobbyId, {
+    id: lobbyId,
     players: [],
-    game_master: {
-      user_id: user_id,
-      username,
-      score: 0,
-      lobby_id,
-    },
+    gameMaster: userId,
     open: false,
     playerBuzzingList: [],
   });
 
-  return lobby_id;
+  return lobbyId;
 }
 
-export function getLobby(lobby_id: string): Lobby | undefined {
-  return games.get(lobby_id);
+export function getLobby(lobbyId: string): Lobby | undefined {
+  return games.get(lobbyId);
 }
 
 export function joinLobby(
-  lobby_id: string,
-  user_id: string,
+  lobbyId: string,
+  userId: string,
   username: string,
 ): Lobby | undefined {
-  const lobby = getLobby(lobby_id);
+  const lobby = getLobby(lobbyId);
 
-  if (!lobby || isPlayerInLobby(lobby, user_id)) return undefined;
+  if (!lobby || isPlayerInLobby(lobby, userId)) return undefined;
 
-  lobby.players.push({ lobby_id, user_id, username, score: 0 });
+  lobby.players.push({
+    lobbyId: lobbyId,
+    userId: userId,
+    username,
+    score: 0,
+  });
 
   return lobby;
 }
 
-export function leaveLobby(lobby_id: string, player: string): boolean {
-  const lobby = getLobby(lobby_id);
+export function leaveLobby(lobbyId: string, player: string): boolean {
+  const lobby = getLobby(lobbyId);
   if (!lobby) return false;
 
   // Delete the lobby if the game master leaves
   if (isPlayerGameMaster(lobby, player)) {
-    games.delete(lobby_id);
+    games.delete(lobbyId);
     return true;
   }
 
   // Slice the player from lobby
-  const index = lobby.players.findIndex((p) => p.user_id === player);
+  const index = lobby.players.findIndex((p) => p.userId === player);
   if (index === -1) return false;
 
   lobby.players.splice(index, 1);
   return true;
 }
 
-export function openLobby(lobby_id: string): boolean {
-  const lobby = getLobby(lobby_id);
+export function openLobby(lobbyId: string): boolean {
+  const lobby = getLobby(lobbyId);
   if (!lobby) return false;
 
   lobby.open = true;
   return true;
 }
 
-export function closeLobby(lobby_id: string): boolean {
-  const lobby = getLobby(lobby_id);
+export function closeLobby(lobbyId: string): boolean {
+  const lobby = getLobby(lobbyId);
   if (!lobby) return false;
 
   lobby.open = false;
   return true;
 }
 
-export function playerBuzzing(lobby_id: string, player: string): boolean {
-  const lobby = getLobby(lobby_id);
+export function playerBuzzing(lobbyId: string, player: string): boolean {
+  const lobby = getLobby(lobbyId);
   if (!lobby) return false;
 
   const p = getPlayer(lobby, player);
@@ -110,8 +107,8 @@ export function playerBuzzing(lobby_id: string, player: string): boolean {
   return true;
 }
 
-export function addPlayerScore(lobby_id: string, player: string): boolean {
-  const lobby = games.get(lobby_id);
+export function addPlayerScore(lobbyId: string, player: string): boolean {
+  const lobby = games.get(lobbyId);
   if (!lobby) return false;
 
   const p = getPlayer(lobby, player);
@@ -123,8 +120,8 @@ export function addPlayerScore(lobby_id: string, player: string): boolean {
   return true;
 }
 
-export function removePlayerScore(lobby_id: string, player: string): boolean {
-  const lobby = games.get(lobby_id);
+export function removePlayerScore(lobbyId: string, player: string): boolean {
+  const lobby = games.get(lobbyId);
   if (!lobby) return false;
 
   const p = getPlayer(lobby, player);
@@ -137,21 +134,21 @@ export function removePlayerScore(lobby_id: string, player: string): boolean {
 }
 
 // --- Help functions ---
-function isLobbyExist(lobby_id: string): boolean {
-  return games.has(lobby_id);
+function isLobbyExist(lobbyId: string): boolean {
+  return games.has(lobbyId);
 }
 
 function isPlayerInLobby(lobby: Lobby, player: string): boolean {
   return (
-    lobby.players.find((p) => p.user_id === player) !== undefined ||
-    lobby.game_master.user_id === player
+    lobby.players.find((p) => p.userId === player) !== undefined ||
+    lobby.gameMaster === player
   );
 }
 
 function isPlayerGameMaster(lobby: Lobby, player: string): boolean {
-  return lobby.game_master.user_id === player;
+  return lobby.gameMaster === player;
 }
 
 function getPlayer(lobby: Lobby, player: string): Player | undefined {
-  return lobby.players.find((p) => p.user_id === player);
+  return lobby.players.find((p) => p.userId === player);
 }
