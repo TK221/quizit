@@ -30,20 +30,18 @@ const Lobby = (props: {
     );
 
     return () => {
-      if (p) {
-        p.unsubscribe(`private-lobby-${props.lobbyId}`);
-      }
+      p.unsubscribe(`private-lobby-${props.lobbyId}`);
     };
-  }, [props.pusherSettings, props.lobbyId, pusher]);
+  }, [props.pusherSettings, props.lobbyId]);
 
   if (!pusher) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center space-y-4 p-4">
+    <div className="flex flex-col items-center space-y-4 p-4">
       <h1 className="h-12 justify-center">Lobby: {props.lobbyId}</h1>
-      <div className="grow"></div>
+      <div className="grow" />
       <PlayerList
         pusher={pusher}
         lobbyId={props.lobbyId}

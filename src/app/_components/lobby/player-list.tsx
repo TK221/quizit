@@ -1,7 +1,7 @@
 "use client";
 
 import type Pusher from "pusher-js";
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { type Player } from "~/server/game/game";
 import PlayerComponent from "./player";
 
@@ -11,22 +11,14 @@ const PlayerList = (props: {
   players: Player[];
   isGameMaster: boolean;
 }) => {
-  useEffect(() => {
-    props.players.push({
-      userId: "1",
-      username: "test",
-      lobbyId: "1",
-      score: 0,
-    });
-
-    return () => {
-      props.players.pop();
-    };
-  }, [props.players]);
+  const [players] = useState([
+    ...props.players,
+    { userId: "1", username: "test", score: 0, lobbyId: "1 " },
+  ]);
 
   return (
     <div className="flex space-x-2">
-      {props.players.map((player) => (
+      {players.map((player) => (
         <PlayerComponent
           key={player.userId}
           player={player}

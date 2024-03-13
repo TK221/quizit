@@ -10,7 +10,7 @@ import CreateLobby from "../_components/create-lobby";
 
 const LobbyMenu = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="mt-20 flex items-center justify-center">
       <Tabs defaultValue="create" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="create">Create Lobby</TabsTrigger>
