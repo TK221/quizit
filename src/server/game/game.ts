@@ -42,10 +42,11 @@ export function joinLobby(
   lobbyId: string,
   userId: string,
   username: string,
-): Lobby | undefined {
+): void {
   const lobby = getLobby(lobbyId);
 
-  if (!lobby || isPlayerInLobby(lobby, userId)) return undefined;
+  if (!lobby || isPlayerInLobby(lobby, userId))
+    throw new Error("Lobby not found");
 
   lobby.players.push({
     lobbyId: lobbyId,
@@ -53,8 +54,6 @@ export function joinLobby(
     username,
     score: 0,
   });
-
-  return lobby;
 }
 
 export function leaveLobby(lobbyId: string, player: string): boolean {
@@ -62,7 +61,7 @@ export function leaveLobby(lobbyId: string, player: string): boolean {
   if (!lobby) return false;
 
   // Delete the lobby if the game master leaves
-  if (isPlayerGameMaster(lobby, player)) {
+  if (lobby.gameMaster === player) {
     games.delete(lobbyId);
     return true;
   }
@@ -107,30 +106,36 @@ export function playerBuzzing(lobbyId: string, player: string): boolean {
   return true;
 }
 
-export function addPlayerScore(lobbyId: string, player: string): boolean {
+export function increasePlayerScore(
+  lobbyId: string,
+  player: string,
+  points: number,
+): void {
   const lobby = games.get(lobbyId);
-  if (!lobby) return false;
+  if (!lobby) throw new Error("Lobby not found");
 
   const p = getPlayer(lobby, player);
 
-  if (!p) return false;
+  if (!p) throw new Error("Player not found");
 
-  p.score++;
-
-  return true;
+  p.score += points;
 }
 
-export function removePlayerScore(lobbyId: string, player: string): boolean {
+export function decreasePlayerScore(
+  lobbyId: string,
+  player: string,
+  points: number,
+): void {
   const lobby = games.get(lobbyId);
-  if (!lobby) return false;
+  if (!lobby) throw new Error("Lobby not found");
 
   const p = getPlayer(lobby, player);
 
-  if (!p) return false;
+  if (!p) throw new Error("Player not found");
 
-  if (p.score > 0) p.score--;
+  p.score -= points;
 
-  return true;
+  if (p.score < 0) p.score = 0;
 }
 
 // --- Help functions ---
@@ -145,7 +150,10 @@ function isPlayerInLobby(lobby: Lobby, player: string): boolean {
   );
 }
 
-function isPlayerGameMaster(lobby: Lobby, player: string): boolean {
+export function isPlayerGameMaster(lobbyId: string, player: string): boolean {
+  const lobby = getLobby(lobbyId);
+  if (!lobby) return false;
+
   return lobby.gameMaster === player;
 }
 

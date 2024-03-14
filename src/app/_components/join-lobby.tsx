@@ -34,8 +34,8 @@ const JoinLobby = () => {
   const router = useRouter();
 
   const createLobby = api.lobby.join.useMutation({
-    onSuccess(data) {
-      router.push(`/lobby/${data.id}`);
+    onSuccess(_, variables) {
+      router.push(`/lobby/${variables.lobbyId}`);
     },
   });
 

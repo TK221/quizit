@@ -13,11 +13,17 @@ const LobbyPage = async ({ params }: { params: { id: string } }) => {
   const lobby = getLobby(params.id);
 
   if (!session) {
-    return <div>Not authenticated</div>;
+    return (
+      <div className="mt-20 flex justify-center text-2xl">
+        Not authenticated
+      </div>
+    );
   }
 
   if (!lobby) {
-    return <div>Lobby not found</div>;
+    return (
+      <div className="mt-20 flex justify-center text-2xl">Lobby not found</div>
+    );
   }
 
   return (
