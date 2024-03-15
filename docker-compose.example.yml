@@ -18,6 +18,9 @@ services:
       PUSHER_APP_PORT: 6001
       CLIENT_PUSHER_APP_HOST: "localhost"
       CLIENT_PUSHER_APP_PORT: 6001
+    depends_on:
+      - db
+      - pusher
   
   db:
     image: postgres
