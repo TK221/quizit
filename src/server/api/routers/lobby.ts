@@ -9,6 +9,9 @@ import {
   increasePlayerScore,
   decreasePlayerScore,
   isPlayerGameMaster,
+  playerBuzzing,
+  openLobby,
+  closeLobby,
 } from "~/server/game/game";
 import pusher from "~/server/pusher/pusher-server";
 
@@ -94,12 +97,39 @@ export const lobbyRouter = createTRPCRouter({
       await updateLobby(input.lobbyId);
     }),
 
-  trigger: protectedProcedure
+  buzz: protectedProcedure
     .input(z.object({ lobbyId: z.string().min(1) }))
-    .mutation(async ({ input }) => {
-      await pusher.trigger(`private-lobby-${input.lobbyId}`, "trigger", {
-        lobbyId: input.lobbyId,
+    .mutation(async ({ ctx, input }) => {
+      const playerId = ctx.session.user.id;
+
+      const player = playerBuzzing(input.lobbyId, playerId);
+
+      await pusher.trigger(`private-lobby-${input.lobbyId}`, "buzz", {
+        player: player,
       });
+
+      await updateLobby(input.lobbyId);
+    }),
+
+  changeLobbyState: protectedProcedure
+    .input(z.object({ lobbyId: z.string().min(1), open: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      const res = isPlayerGameMaster(input.lobbyId, ctx.session.user.id);
+
+      if (!res) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not the game master",
+        });
+      }
+
+      if (input.open) {
+        openLobby(input.lobbyId);
+      } else {
+        closeLobby(input.lobbyId);
+      }
+
+      await updateLobby(input.lobbyId);
     }),
 });
 

@@ -56,18 +56,18 @@ export function joinLobby(
   });
 }
 
-export function leaveLobby(lobbyId: string, player: string): boolean {
+export function leaveLobby(lobbyId: string, playerId: string): boolean {
   const lobby = getLobby(lobbyId);
   if (!lobby) return false;
 
   // Delete the lobby if the game master leaves
-  if (lobby.gameMaster === player) {
+  if (lobby.gameMaster === playerId) {
     games.delete(lobbyId);
     return true;
   }
 
   // Slice the player from lobby
-  const index = lobby.players.findIndex((p) => p.userId === player);
+  const index = lobby.players.findIndex((p) => p.userId === playerId);
   if (index === -1) return false;
 
   lobby.players.splice(index, 1);
@@ -90,52 +90,52 @@ export function closeLobby(lobbyId: string): boolean {
   return true;
 }
 
-export function playerBuzzing(lobbyId: string, player: string): boolean {
+export function playerBuzzing(lobbyId: string, playerId: string): Player {
   const lobby = getLobby(lobbyId);
-  if (!lobby) return false;
+  if (!lobby) throw new Error("Lobby not found");
 
-  const p = getPlayer(lobby, player);
+  const player = getPlayer(lobby, playerId);
 
-  if (!p) return false;
+  if (!player) throw new Error("Player not found");
 
-  if (!lobby.open) return false;
+  if (!lobby.open) throw new Error("Lobby is not open");
 
   lobby.open = false;
-  lobby.playerBuzzingList.push(p);
+  lobby.playerBuzzingList.push(player);
 
-  return true;
+  return player;
 }
 
 export function increasePlayerScore(
   lobbyId: string,
-  player: string,
+  playerId: string,
   points: number,
 ): void {
   const lobby = games.get(lobbyId);
   if (!lobby) throw new Error("Lobby not found");
 
-  const p = getPlayer(lobby, player);
+  const player = getPlayer(lobby, playerId);
 
-  if (!p) throw new Error("Player not found");
+  if (!player) throw new Error("Player not found");
 
-  p.score += points;
+  player.score += points;
 }
 
 export function decreasePlayerScore(
   lobbyId: string,
-  player: string,
+  playerId: string,
   points: number,
 ): void {
   const lobby = games.get(lobbyId);
   if (!lobby) throw new Error("Lobby not found");
 
-  const p = getPlayer(lobby, player);
+  const player = getPlayer(lobby, playerId);
 
-  if (!p) throw new Error("Player not found");
+  if (!player) throw new Error("Player not found");
 
-  p.score -= points;
+  player.score -= points;
 
-  if (p.score < 0) p.score = 0;
+  if (player.score < 0) player.score = 0;
 }
 
 // --- Help functions ---
@@ -150,11 +150,11 @@ function isPlayerInLobby(lobby: Lobby, player: string): boolean {
   );
 }
 
-export function isPlayerGameMaster(lobbyId: string, player: string): boolean {
+export function isPlayerGameMaster(lobbyId: string, playerId: string): boolean {
   const lobby = getLobby(lobbyId);
   if (!lobby) return false;
 
-  return lobby.gameMaster === player;
+  return lobby.gameMaster === playerId;
 }
 
 function getPlayer(lobby: Lobby, player: string): Player | undefined {

@@ -7,6 +7,8 @@ import pusherInit, {
   type PusherClientSettings,
 } from "~/server/pusher/pusher-client";
 import PlayerList from "./player-list";
+import Buzzer from "./buzzer";
+import Controll from "./controll";
 
 const Lobby = (props: {
   pusherSettings: PusherClientSettings;
@@ -41,9 +43,18 @@ const Lobby = (props: {
   return (
     <div className="flex flex-col items-center space-y-4 p-4">
       <h1 className="h-12 justify-center">Lobby: {props.lobbyId}</h1>
-      <div className="h-20 grow" />
+      <div className="h-20 grow">
+        {isGameMaster ? (
+          <Controll
+            lobbyId={props.lobbyId}
+            pusher={pusher}
+            lobbyState={lobby.open}
+          />
+        ) : (
+          <Buzzer lobbyId={props.lobbyId} lobbyState={lobby.open} />
+        )}
+      </div>
       <PlayerList
-        pusher={pusher}
         lobbyId={props.lobbyId}
         players={lobby.players}
         isGameMaster={isGameMaster}

@@ -1,9 +1,7 @@
-import type Pusher from "pusher-js";
 import { type Player } from "~/server/game/game";
 import PlayerComponent from "./player";
 
 const PlayerList = (props: {
-  pusher: Pusher;
   lobbyId: string;
   players: Player[];
   isGameMaster: boolean;
