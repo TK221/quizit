@@ -43,7 +43,7 @@ const Lobby = (props: {
   return (
     <div className="flex flex-col items-center space-y-4 p-4">
       <h1 className="h-12 justify-center">Lobby: {props.lobbyId}</h1>
-      <div className="h-20 grow">
+      <div className="h-28 grow">
         {isGameMaster ? (
           <Controll
             lobbyId={props.lobbyId}

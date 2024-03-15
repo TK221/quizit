@@ -7,8 +7,8 @@ const Buzzer = (props: { lobbyId: string; lobbyState: boolean }) => {
 
   return (
     <Button
-      variant={props.lobbyState ? "secondary" : "destructive"}
-      className="h-full w-full"
+      variant={props.lobbyState ? "destructive" : "outline"}
+      className="h-full w-32"
       onClick={() => buzz.mutate({ lobbyId: props.lobbyId })}
     >
       Buzzer
