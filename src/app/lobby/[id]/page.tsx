@@ -1,7 +1,7 @@
 import React from "react";
 import { unstable_noStore } from "next/cache";
 import { env } from "~/env";
-import { getLobby } from "~/server/game/game";
+import { getLobby, isPlayerInLobby } from "~/server/game/game";
 import Lobby from "~/app/_components/lobby/lobby";
 import { getServerAuthSession } from "~/server/auth";
 
@@ -9,8 +9,6 @@ const LobbyPage = async ({ params }: { params: { id: string } }) => {
   unstable_noStore();
 
   const session = await getServerAuthSession();
-
-  const lobby = getLobby(params.id);
 
   if (!session) {
     return (
@@ -20,7 +18,9 @@ const LobbyPage = async ({ params }: { params: { id: string } }) => {
     );
   }
 
-  if (!lobby) {
+  const lobby = getLobby(params.id);
+
+  if (!lobby || !isPlayerInLobby(lobby, session.user.id)) {
     return (
       <div className="mt-20 flex justify-center text-2xl">Lobby not found</div>
     );

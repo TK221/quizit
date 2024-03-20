@@ -8,6 +8,7 @@ export interface Player {
 
 export interface Lobby {
   id: string;
+  name: string;
   players: Player[];
   gameMaster: string;
   open: boolean;
@@ -18,13 +19,14 @@ export interface Lobby {
 const games = new Map<string, Lobby>();
 
 // --- Game Logic ---
-export function createLobby(userId: string): string | undefined {
+export function createLobby(userId: string, lobbyName: string): string {
   const lobbyId = Math.random().toString(36).slice(2);
 
-  if (isLobbyExist(lobbyId)) return undefined;
+  if (isLobbyExist(lobbyId)) throw new Error("Lobby already exists");
 
   games.set(lobbyId, {
     id: lobbyId,
+    name: lobbyName,
     players: [],
     gameMaster: userId,
     open: false,
@@ -143,7 +145,7 @@ function isLobbyExist(lobbyId: string): boolean {
   return games.has(lobbyId);
 }
 
-function isPlayerInLobby(lobby: Lobby, player: string): boolean {
+export function isPlayerInLobby(lobby: Lobby, player: string): boolean {
   return (
     lobby.players.find((p) => p.userId === player) !== undefined ||
     lobby.gameMaster === player

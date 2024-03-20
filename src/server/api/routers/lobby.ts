@@ -16,15 +16,21 @@ import {
 import pusher from "~/server/pusher/pusher-server";
 
 export const lobbyRouter = createTRPCRouter({
-  create: protectedProcedure.mutation(async ({ ctx }) => {
-    const lobby = createLobby(ctx.session.user.id);
+  create: protectedProcedure
+    .input(
+      z.object({
+        lobbyName: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const lobby = createLobby(ctx.session.user.id, input.lobbyName);
 
-    if (!lobby) {
-      throw new Error("Failed to create lobby");
-    }
+      if (!lobby) {
+        throw new Error("Failed to create lobby");
+      }
 
-    return lobby;
-  }),
+      return lobby;
+    }),
 
   join: protectedProcedure
     .input(

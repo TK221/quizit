@@ -19,8 +19,8 @@ import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-  username: z.string().max(20, {
-    message: "Username must be at most 20 characters long",
+  lobbyName: z.string().max(20, {
+    message: "Lobby name must be at most 20 characters long",
   }),
 });
 
@@ -36,12 +36,12 @@ const CreateLobby = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      lobbyName: "",
     },
   });
 
-  const onSubmit = () => {
-    createLobby.mutate();
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    createLobby.mutate({ lobbyName: values.lobbyName });
   };
 
   return (
@@ -52,10 +52,10 @@ const CreateLobby = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="username"
+              name="lobbyName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Lobby name</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
