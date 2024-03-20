@@ -41,9 +41,9 @@ const Lobby = (props: {
   }
 
   return (
-    <div className="flex flex-col items-center space-y-4 p-4">
-      <h1 className="h-16 justify-center text-3xl font-bold">{lobby.name}</h1>
-      <div className="h-28 grow">
+    <div className="flex h-full flex-col items-center space-y-4 p-4">
+      <h1 className="h-20 shrink  text-3xl font-bold">{lobby.name}</h1>
+      <div className="grow">
         {isGameMaster ? (
           <Controll
             lobbyId={props.lobbyId}
@@ -54,11 +54,17 @@ const Lobby = (props: {
           <Buzzer lobbyId={props.lobbyId} lobbyState={lobby.open} />
         )}
       </div>
-      <PlayerList
-        lobbyId={props.lobbyId}
-        players={lobby.players}
-        isGameMaster={isGameMaster}
-      />
+      <div>
+        {lobby.players.length > 0 ? (
+          <PlayerList
+            lobbyId={props.lobbyId}
+            players={lobby.players}
+            isGameMaster={isGameMaster}
+          />
+        ) : (
+          <p className="w-full text-center">No connected players</p>
+        )}
+      </div>
     </div>
   );
 };

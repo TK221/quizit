@@ -27,18 +27,16 @@ const LobbyPage = async ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <div>
-      <Lobby
-        pusherSettings={{
-          app_host: env.CLIENT_PUSHER_APP_HOST,
-          app_key: env.PUSHER_APP_KEY,
-          app_port: env.CLIENT_PUSHER_APP_PORT,
-        }}
-        lobbyId={params.id}
-        initialLobby={lobby}
-        user={{ id: session.user.id }}
-      />
-    </div>
+    <Lobby
+      pusherSettings={{
+        app_host: env.CLIENT_PUSHER_APP_HOST,
+        app_key: env.PUSHER_APP_KEY,
+        app_port: env.CLIENT_PUSHER_APP_PORT,
+      }}
+      lobbyId={params.id}
+      initialLobby={lobby}
+      user={{ id: session.user.id }}
+    />
   );
 };
 

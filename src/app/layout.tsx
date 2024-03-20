@@ -32,9 +32,11 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex flex-col">
+            <div className="flex h-screen flex-col">
               <Navbar />
-              <div>{children}</div>
+              <div className="flex grow flex-col overflow-scroll">
+                {children}
+              </div>
             </div>
           </ThemeProvider>
         </TRPCReactProvider>
