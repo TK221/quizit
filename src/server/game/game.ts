@@ -47,7 +47,7 @@ export function joinLobby(
 ): void {
   const lobby = getLobby(lobbyId);
 
-  if (!lobby || isPlayerInLobby(lobby, userId))
+  if (!lobby || isPlayerInLobby(lobby.id, userId))
     throw new Error("Lobby not found");
 
   lobby.players.push({
@@ -145,10 +145,13 @@ function isLobbyExist(lobbyId: string): boolean {
   return games.has(lobbyId);
 }
 
-export function isPlayerInLobby(lobby: Lobby, player: string): boolean {
+export function isPlayerInLobby(lobbyId: string, playerId: string): boolean {
+  const lobby = getLobby(lobbyId);
+  if (!lobby) return false;
+
   return (
-    lobby.players.find((p) => p.userId === player) !== undefined ||
-    lobby.gameMaster === player
+    lobby.players.find((p) => p.userId === playerId) !== undefined ||
+    lobby.gameMaster === playerId
   );
 }
 

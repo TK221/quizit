@@ -30,7 +30,7 @@ const formSchema = z.object({
   lobbyId: z.string().min(1, { message: "Lobby-ID must be given" }),
 });
 
-const JoinLobby = () => {
+const JoinLobby = (params: { lobbyId?: string }) => {
   const router = useRouter();
 
   const createLobby = api.lobby.join.useMutation({
@@ -43,7 +43,7 @@ const JoinLobby = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
-      lobbyId: "",
+      lobbyId: params.lobbyId ?? "",
     },
   });
 
