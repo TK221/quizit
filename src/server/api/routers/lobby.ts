@@ -12,6 +12,8 @@ import {
   playerBuzzing,
   openLobby,
   closeLobby,
+  wrongAnswer,
+  correctAnswer,
 } from "~/server/game/game";
 import pusher from "~/server/pusher/pusher-server";
 
@@ -99,6 +101,46 @@ export const lobbyRouter = createTRPCRouter({
       }
 
       decreasePlayerScore(input.lobbyId, input.userId, input.points);
+
+      await updateLobby(input.lobbyId);
+    }),
+
+  correctAnswer: protectedProcedure
+    .input(z.object({ lobbyId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const isGameMaster = isPlayerGameMaster(
+        input.lobbyId,
+        ctx.session.user.id,
+      );
+
+      if (!isGameMaster) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not the game master",
+        });
+      }
+
+      correctAnswer(input.lobbyId);
+
+      await updateLobby(input.lobbyId);
+    }),
+
+  wrongAnswer: protectedProcedure
+    .input(z.object({ lobbyId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const isGameMaster = isPlayerGameMaster(
+        input.lobbyId,
+        ctx.session.user.id,
+      );
+
+      if (!isGameMaster) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not the game master",
+        });
+      }
+
+      wrongAnswer(input.lobbyId);
 
       await updateLobby(input.lobbyId);
     }),

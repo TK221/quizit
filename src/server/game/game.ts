@@ -12,7 +12,7 @@ export interface Lobby {
   players: Player[];
   gameMaster: string;
   open: boolean;
-  playerBuzzingList: Player[];
+  playerBuzzing?: Player;
 }
 
 // --- Game Elements ---
@@ -30,7 +30,6 @@ export function createLobby(userId: string, lobbyName: string): string {
     players: [],
     gameMaster: userId,
     open: false,
-    playerBuzzingList: [],
   });
 
   return lobbyId;
@@ -81,6 +80,7 @@ export function openLobby(lobbyId: string): boolean {
   if (!lobby) return false;
 
   lobby.open = true;
+  resetPlayerBuzzing(lobbyId);
   return true;
 }
 
@@ -103,7 +103,7 @@ export function playerBuzzing(lobbyId: string, playerId: string): Player {
   if (!lobby.open) throw new Error("Lobby is not open");
 
   lobby.open = false;
-  lobby.playerBuzzingList.push(player);
+  lobby.playerBuzzing = player;
 
   return player;
 }
@@ -140,6 +140,30 @@ export function decreasePlayerScore(
   if (player.score < 0) player.score = 0;
 }
 
+export function correctAnswer(lobbyId: string): void {
+  const buzzingPlayer = getBuzzingPlayer(lobbyId);
+
+  if (!buzzingPlayer) throw new Error("No player buzzing");
+
+  increasePlayerScore(lobbyId, buzzingPlayer.userId, 3);
+
+  resetPlayerBuzzing(lobbyId);
+}
+
+export function wrongAnswer(lobbyId: string): void {
+  const buzzingPlayer = getBuzzingPlayer(lobbyId);
+  if (!buzzingPlayer) throw new Error("No player buzzing");
+
+  const players = getPlayers(lobbyId);
+
+  players.forEach((player) => {
+    if (player.userId !== buzzingPlayer.userId)
+      increasePlayerScore(lobbyId, player.userId, 1);
+  });
+
+  resetPlayerBuzzing(lobbyId);
+}
+
 // --- Help functions ---
 function isLobbyExist(lobbyId: string): boolean {
   return games.has(lobbyId);
@@ -164,4 +188,25 @@ export function isPlayerGameMaster(lobbyId: string, playerId: string): boolean {
 
 function getPlayer(lobby: Lobby, player: string): Player | undefined {
   return lobby.players.find((p) => p.userId === player);
+}
+
+function getPlayers(lobbyId: string): Player[] {
+  const lobby = getLobby(lobbyId);
+  if (!lobby) throw new Error("Lobby not found");
+
+  return lobby.players;
+}
+
+function resetPlayerBuzzing(lobbyId: string): void {
+  const lobby = getLobby(lobbyId);
+  if (!lobby) throw new Error("Lobby not found");
+
+  lobby.playerBuzzing = undefined;
+}
+
+function getBuzzingPlayer(lobbyId: string): Player | undefined {
+  const lobby = getLobby(lobbyId);
+  if (!lobby) throw new Error("Lobby not found");
+
+  return lobby.playerBuzzing;
 }

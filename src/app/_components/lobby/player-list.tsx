@@ -1,11 +1,7 @@
 import { type Player } from "~/server/game/game";
 import PlayerComponent from "./player";
 
-const PlayerList = (props: {
-  lobbyId: string;
-  players: Player[];
-  isGameMaster: boolean;
-}) => {
+const PlayerList = (props: { lobbyId: string; players: Player[] }) => {
   return (
     <div className="flex space-x-2">
       {props.players.map((player) => (
@@ -13,7 +9,6 @@ const PlayerList = (props: {
           lobbyId={props.lobbyId}
           key={player.userId}
           player={player}
-          isGameMaster={props.isGameMaster}
         />
       ))}
     </div>
