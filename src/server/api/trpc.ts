@@ -14,6 +14,9 @@ import { ZodError } from "zod";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 
+import { z } from "zod";
+import { isPlayerGameMaster, isPlayerInLobby } from "../game/game";
+
 /**
  * 1. CONTEXT
  *
@@ -99,3 +102,37 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
     },
   });
 });
+
+export const inLobbyProcedure = protectedProcedure
+  .input(
+    z.object({
+      lobbyId: z.string().min(1),
+    }),
+  )
+  .use(({ ctx, input, next }) => {
+    const res = isPlayerInLobby(input.lobbyId, ctx.session.user.id);
+
+    if (!res) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You are not in the lobby",
+      });
+    }
+
+    return next({ ctx });
+  });
+
+export const gameMasterProcedure = inLobbyProcedure.use(
+  ({ ctx, input, next }) => {
+    const res = isPlayerGameMaster(input.lobbyId, ctx.session.user.id);
+
+    if (!res) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You are not the game master",
+      });
+    }
+
+    return next({ ctx });
+  },
+);
