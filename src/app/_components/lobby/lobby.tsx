@@ -9,6 +9,9 @@ import pusherInit, {
 import PlayerList from "./player-list";
 import Buzzer from "./buzzer";
 import Controll from "./controll";
+import BuzzInfo from "./buzz-info";
+
+export const IsGameMasterContext = React.createContext<boolean>(false);
 
 const Lobby = (props: {
   pusherSettings: PusherClientSettings;
@@ -41,31 +44,26 @@ const Lobby = (props: {
   }
 
   return (
-    <div className="flex h-full flex-col items-center space-y-4 p-4">
-      <h1 className="h-20 shrink  text-3xl font-bold">{lobby.name}</h1>
-      <div className="grow">
-        {isGameMaster ? (
-          <Controll
-            lobbyId={props.lobbyId}
-            pusher={pusher}
-            lobbyState={lobby.open}
-          />
-        ) : (
-          <Buzzer lobbyId={props.lobbyId} lobbyState={lobby.open} />
-        )}
+    <IsGameMasterContext.Provider value={isGameMaster}>
+      <div className="flex h-full flex-col items-center space-y-4 p-4">
+        <h1 className="h-20 shrink  text-3xl font-bold">{lobby.name}</h1>
+        <div className="flex grow flex-col items-center space-y-4">
+          {isGameMaster ? (
+            <Controll lobbyId={props.lobbyId} />
+          ) : (
+            <Buzzer lobbyId={props.lobbyId} lobbyState={lobby.open} />
+          )}
+          <BuzzInfo pusher={pusher} lobby={lobby} />
+        </div>
+        <div>
+          {lobby.players.length > 0 ? (
+            <PlayerList lobbyId={props.lobbyId} players={lobby.players} />
+          ) : (
+            <p className="w-full text-center">No connected players</p>
+          )}
+        </div>
       </div>
-      <div>
-        {lobby.players.length > 0 ? (
-          <PlayerList
-            lobbyId={props.lobbyId}
-            players={lobby.players}
-            isGameMaster={isGameMaster}
-          />
-        ) : (
-          <p className="w-full text-center">No connected players</p>
-        )}
-      </div>
-    </div>
+    </IsGameMasterContext.Provider>
   );
 };
 
