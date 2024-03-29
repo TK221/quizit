@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.0](https://github.com/TK221/quizit/compare/v0.0.1...v0.1.0) (2024-03-29)
+
+
+### Features
+
+* add buzzing sound ([3f98353](https://github.com/TK221/quizit/commit/3f98353965e9cb8a4c26e619f7e3ee0694009184))
+* show buzzing player with answer control ([51d6d0f](https://github.com/TK221/quizit/commit/51d6d0fa3fe744aef90e2e313c97912394419183))
+
+
+### Bug Fixes
+
+* audio import error ([0d0ff4c](https://github.com/TK221/quizit/commit/0d0ff4c9dae5449c1847cedbe12c5957dae9057d))
+
 ## 0.0.1 (2024-03-29)
 
 
