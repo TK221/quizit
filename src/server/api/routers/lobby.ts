@@ -1,14 +1,18 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  gameMasterProcedure,
+  inLobbyProcedure,
+  protectedProcedure,
+} from "~/server/api/trpc";
 import {
   createLobby,
   joinLobby,
   getLobby,
   increasePlayerScore,
   decreasePlayerScore,
-  isPlayerGameMaster,
   playerBuzzing,
   openLobby,
   closeLobby,
@@ -44,133 +48,72 @@ export const lobbyRouter = createTRPCRouter({
       await updateLobby(input.lobbyId);
     }),
 
-  get: protectedProcedure
-    .input(z.object({ lobbyId: z.string().min(1) }))
-    .query(async ({ input }) => {
-      const lobby = getLobby(input.lobbyId);
+  get: inLobbyProcedure.query(async ({ input }) => {
+    const lobby = getLobby(input.lobbyId);
 
-      if (!lobby) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Lobby not found",
-        });
-      }
+    if (!lobby) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Lobby not found",
+      });
+    }
 
-      return lobby;
-    }),
+    return lobby;
+  }),
 
-  increaseScore: protectedProcedure
+  buzz: inLobbyProcedure.mutation(async ({ ctx, input }) => {
+    const playerId = ctx.session.user.id;
+
+    const player = playerBuzzing(input.lobbyId, playerId);
+
+    await pusher.trigger(`private-lobby-${input.lobbyId}`, "buzz", {
+      player: player,
+    });
+
+    await updateLobby(input.lobbyId);
+  }),
+
+  increaseScore: gameMasterProcedure
     .input(
       z.object({
-        lobbyId: z.string().min(1),
         userId: z.string().min(1),
         points: z.number().int(),
       }),
     )
-    .mutation(async ({ ctx, input }) => {
-      const res = isPlayerGameMaster(input.lobbyId, ctx.session.user.id);
-
-      if (!res) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "You are not the game master",
-        });
-      }
-
+    .mutation(async ({ input }) => {
       increasePlayerScore(input.lobbyId, input.userId, input.points);
 
       await updateLobby(input.lobbyId);
     }),
 
-  decreaseScore: protectedProcedure
+  decreaseScore: gameMasterProcedure
     .input(
       z.object({
-        lobbyId: z.string().min(1),
         userId: z.string().min(1),
         points: z.number().int(),
       }),
     )
-    .mutation(async ({ ctx, input }) => {
-      const res = isPlayerGameMaster(input.lobbyId, ctx.session.user.id);
-
-      if (!res) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "You are not the game master",
-        });
-      }
-
+    .mutation(async ({ input }) => {
       decreasePlayerScore(input.lobbyId, input.userId, input.points);
 
       await updateLobby(input.lobbyId);
     }),
 
-  correctAnswer: protectedProcedure
-    .input(z.object({ lobbyId: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      const isGameMaster = isPlayerGameMaster(
-        input.lobbyId,
-        ctx.session.user.id,
-      );
+  correctAnswer: gameMasterProcedure.mutation(async ({ input }) => {
+    correctAnswer(input.lobbyId);
 
-      if (!isGameMaster) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "You are not the game master",
-        });
-      }
+    await updateLobby(input.lobbyId);
+  }),
 
-      correctAnswer(input.lobbyId);
+  wrongAnswer: gameMasterProcedure.mutation(async ({ input }) => {
+    wrongAnswer(input.lobbyId);
 
-      await updateLobby(input.lobbyId);
-    }),
+    await updateLobby(input.lobbyId);
+  }),
 
-  wrongAnswer: protectedProcedure
-    .input(z.object({ lobbyId: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      const isGameMaster = isPlayerGameMaster(
-        input.lobbyId,
-        ctx.session.user.id,
-      );
-
-      if (!isGameMaster) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "You are not the game master",
-        });
-      }
-
-      wrongAnswer(input.lobbyId);
-
-      await updateLobby(input.lobbyId);
-    }),
-
-  buzz: protectedProcedure
-    .input(z.object({ lobbyId: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      const playerId = ctx.session.user.id;
-
-      const player = playerBuzzing(input.lobbyId, playerId);
-
-      await pusher.trigger(`private-lobby-${input.lobbyId}`, "buzz", {
-        player: player,
-      });
-
-      await updateLobby(input.lobbyId);
-    }),
-
-  changeLobbyState: protectedProcedure
-    .input(z.object({ lobbyId: z.string().min(1), open: z.boolean() }))
-    .mutation(async ({ ctx, input }) => {
-      const res = isPlayerGameMaster(input.lobbyId, ctx.session.user.id);
-
-      if (!res) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "You are not the game master",
-        });
-      }
-
+  changeLobbyState: gameMasterProcedure
+    .input(z.object({ open: z.boolean() }))
+    .mutation(async ({ input }) => {
       if (input.open) {
         openLobby(input.lobbyId);
       } else {
