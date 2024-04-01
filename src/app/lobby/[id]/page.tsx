@@ -5,7 +5,7 @@ import {
   getLobby,
   isPlayerGameMaster,
   isPlayerInLobby,
-} from "~/server/game/game";
+} from "~/server/game/lobby";
 import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
 import Lobby from "~/app/_components/lobby/lobby";

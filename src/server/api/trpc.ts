@@ -15,7 +15,7 @@ import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 
 import { z } from "zod";
-import { isPlayerGameMaster, isPlayerInLobby } from "../game/game";
+import { isPlayerGameMaster, isPlayerInLobby } from "../game/lobby";
 
 /**
  * 1. CONTEXT

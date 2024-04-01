@@ -2,7 +2,7 @@
 
 import type Pusher from "pusher-js";
 import React, { useEffect, useState } from "react";
-import { Lobby } from "~/server/game/game";
+import { Lobby } from "~/server/game/lobby";
 import pusherInit, {
   type PusherClientSettings,
 } from "~/server/pusher/pusher-client";

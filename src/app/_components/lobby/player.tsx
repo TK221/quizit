@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useContext } from "react";
-import { Player } from "~/server/game/game";
+import { Player } from "~/server/game/lobby";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";

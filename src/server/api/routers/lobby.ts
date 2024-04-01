@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import {
@@ -7,18 +6,9 @@ import {
   inLobbyProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
-import {
-  createLobby,
-  joinLobby,
-  getLobby,
-  increasePlayerScore,
-  decreasePlayerScore,
-  playerBuzzing,
-  openLobby,
-  closeLobby,
-  wrongAnswer,
-  correctAnswer,
-} from "~/server/game/game";
+import * as GameMaster from "~/server/game/game-master";
+import * as Lobby from "~/server/game/lobby";
+import * as Player from "~/server/game/player";
 import pusher from "~/server/pusher/pusher-server";
 
 export const lobbyRouter = createTRPCRouter({
@@ -29,11 +19,7 @@ export const lobbyRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const lobby = createLobby(ctx.session.user.id, input.lobbyName);
-
-      if (!lobby) {
-        throw new Error("Failed to create lobby");
-      }
+      const lobby = Lobby.createLobby(ctx.session.user.id, input.lobbyName);
 
       return lobby;
     }),
@@ -43,20 +29,13 @@ export const lobbyRouter = createTRPCRouter({
       z.object({ lobbyId: z.string().min(1), username: z.string().min(1) }),
     )
     .mutation(async ({ ctx, input }) => {
-      joinLobby(input.lobbyId, ctx.session.user.id, input.username);
+      Lobby.joinLobby(input.lobbyId, ctx.session.user.id, input.username);
 
       await updateLobby(input.lobbyId);
     }),
 
   get: inLobbyProcedure.query(async ({ input }) => {
-    const lobby = getLobby(input.lobbyId);
-
-    if (!lobby) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Lobby not found",
-      });
-    }
+    const lobby = Lobby.getLobby(input.lobbyId);
 
     return lobby;
   }),
@@ -64,7 +43,7 @@ export const lobbyRouter = createTRPCRouter({
   buzz: inLobbyProcedure.mutation(async ({ ctx, input }) => {
     const playerId = ctx.session.user.id;
 
-    const player = playerBuzzing(input.lobbyId, playerId);
+    const player = Player.playerBuzzing(input.lobbyId, playerId);
 
     await pusher.trigger(`private-lobby-${input.lobbyId}`, "buzz", {
       player: player,
@@ -81,7 +60,7 @@ export const lobbyRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
-      increasePlayerScore(input.lobbyId, input.userId, input.points);
+      GameMaster.increasePlayerScore(input.lobbyId, input.userId, input.points);
 
       await updateLobby(input.lobbyId);
     }),
@@ -94,19 +73,19 @@ export const lobbyRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input }) => {
-      decreasePlayerScore(input.lobbyId, input.userId, input.points);
+      GameMaster.decreasePlayerScore(input.lobbyId, input.userId, input.points);
 
       await updateLobby(input.lobbyId);
     }),
 
   correctAnswer: gameMasterProcedure.mutation(async ({ input }) => {
-    correctAnswer(input.lobbyId);
+    GameMaster.correctAnswer(input.lobbyId);
 
     await updateLobby(input.lobbyId);
   }),
 
   wrongAnswer: gameMasterProcedure.mutation(async ({ input }) => {
-    wrongAnswer(input.lobbyId);
+    GameMaster.wrongAnswer(input.lobbyId);
 
     await updateLobby(input.lobbyId);
   }),
@@ -115,9 +94,9 @@ export const lobbyRouter = createTRPCRouter({
     .input(z.object({ open: z.boolean() }))
     .mutation(async ({ input }) => {
       if (input.open) {
-        openLobby(input.lobbyId);
+        GameMaster.openLobby(input.lobbyId);
       } else {
-        closeLobby(input.lobbyId);
+        GameMaster.closeLobby(input.lobbyId);
       }
 
       await updateLobby(input.lobbyId);
@@ -125,14 +104,7 @@ export const lobbyRouter = createTRPCRouter({
 });
 
 async function updateLobby(lobbyId: string) {
-  const lobby = getLobby(lobbyId);
-
-  if (!lobby) {
-    throw new TRPCError({
-      code: "NOT_FOUND",
-      message: "Lobby not found",
-    });
-  }
+  const lobby = Lobby.getLobby(lobbyId);
 
   await pusher.trigger(`private-lobby-${lobby.id}`, "update", {
     lobby: lobby,

@@ -1,4 +1,4 @@
-import { type Player } from "~/server/game/game";
+import { type Player } from "~/server/game/lobby";
 import PlayerComponent from "./player";
 
 const PlayerList = (props: { lobbyId: string; players: Player[] }) => {

@@ -33,15 +33,15 @@ const BuzzInfo = (props: { pusher: Pusher; lobby: Lobby }) => {
           <CardTitle className="text-center">
             {props.lobby.open
               ? "open for buzzing..."
-              : props.lobby.playerBuzzing
-                ? `${props.lobby.playerBuzzing.username} buzzed!`
+              : props.lobby.buzzingPlayer
+                ? `${props.lobby.buzzingPlayer.username} buzzed!`
                 : "Closed"}
           </CardTitle>
         </CardHeader>
-        {isGameMaster && props.lobby.playerBuzzing && (
+        {isGameMaster && props.lobby.buzzingPlayer && (
           <HandleAnswer
             lobbyId={props.lobby.id}
-            buzzingPlayerId={props.lobby.playerBuzzing.userId}
+            buzzingPlayerId={props.lobby.buzzingPlayer.userId}
           />
         )}
       </Card>
