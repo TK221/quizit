@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.0](https://github.com/TK221/quizit/compare/v0.2.0...v0.3.0) (2024-04-02)
+
+
+### Features
+
+* answer reveal audio response ([558f2eb](https://github.com/TK221/quizit/commit/558f2eb7822080439fa4ca75415f84c87c4ac76e))
+* buzz with space press ([ee49d82](https://github.com/TK221/quizit/commit/ee49d82b54dc1a7199ae2bac3f8e282589ae1aff))
+* show result of answer as text ([a197732](https://github.com/TK221/quizit/commit/a197732db09009481dd629c30500fd8572dd8995))
+* wrong and correct answer tracking ([db4ceb6](https://github.com/TK221/quizit/commit/db4ceb6513b77e91060542f0577c50a3a455a94a))
+
 ## [0.2.0](https://github.com/TK221/quizit/compare/v0.1.1...v0.2.0) (2024-04-02)
 
 
