@@ -11,6 +11,7 @@ import Buzzer from "./buzzer";
 import Controll from "./controll";
 import BuzzInfo from "./buzz-info";
 import { PlayerContext } from "~/app/_contexts/player";
+import LoadingSpinner from "../loading-spinner";
 
 const Lobby = (props: {
   pusherSettings: PusherClientSettings;
@@ -40,7 +41,11 @@ const Lobby = (props: {
   }, [props.pusherSettings, props.lobbyId]);
 
   if (!pusher) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex h-full justify-center">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   return (
