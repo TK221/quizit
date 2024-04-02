@@ -82,12 +82,20 @@ export const lobbyRouter = createTRPCRouter({
     GameMaster.correctAnswer(input.lobbyId);
 
     await updateLobby(input.lobbyId);
+
+    await pusher.trigger(`private-lobby-${input.lobbyId}`, "reveal", {
+      correct: true,
+    });
   }),
 
   wrongAnswer: gameMasterProcedure.mutation(async ({ input }) => {
     GameMaster.wrongAnswer(input.lobbyId);
 
     await updateLobby(input.lobbyId);
+
+    await pusher.trigger(`private-lobby-${input.lobbyId}`, "reveal", {
+      correct: false,
+    });
   }),
 
   changeLobbyState: gameMasterProcedure

@@ -8,9 +8,19 @@ import HandleAnswer from "./handle-answer";
 import { usePlayerContext } from "~/app/_contexts/player";
 
 const BuzzInfo = (props: { pusher: Pusher; lobby: Lobby }) => {
-  const audio = useRef<HTMLAudioElement | undefined>(
+  const buzzAudio = useRef<HTMLAudioElement | undefined>(
     typeof Audio !== "undefined"
       ? new Audio("/sounds/buzzing-sound.mp3")
+      : undefined,
+  );
+
+  const correctAudio = useRef<HTMLAudioElement | undefined>(
+    typeof Audio !== "undefined" ? new Audio("/sounds/correct.mp3") : undefined,
+  );
+
+  const incorrectAudio = useRef<HTMLAudioElement | undefined>(
+    typeof Audio !== "undefined"
+      ? new Audio("/sounds/incorrect.mp3")
       : undefined,
   );
 
@@ -18,11 +28,20 @@ const BuzzInfo = (props: { pusher: Pusher; lobby: Lobby }) => {
 
   useEffect(() => {
     props.pusher.bind("buzz", async () => {
-      await audio.current?.play();
+      await buzzAudio.current?.play();
+    });
+
+    props.pusher.bind("reveal", async (data: { correct: boolean }) => {
+      if (data.correct) {
+        await correctAudio.current?.play();
+      } else {
+        await incorrectAudio.current?.play();
+      }
     });
 
     return () => {
       props.pusher.unbind("buzz");
+      props.pusher.unbind("reveal");
     };
   }, [props.pusher]);
 
