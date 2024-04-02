@@ -10,8 +10,7 @@ import PlayerList from "./player-list";
 import Buzzer from "./buzzer";
 import Controll from "./controll";
 import BuzzInfo from "./buzz-info";
-
-export const IsGameMasterContext = React.createContext<boolean>(false);
+import { PlayerContext } from "~/app/_contexts/player";
 
 const Lobby = (props: {
   pusherSettings: PusherClientSettings;
@@ -45,7 +44,9 @@ const Lobby = (props: {
   }
 
   return (
-    <IsGameMasterContext.Provider value={isGameMaster}>
+    <PlayerContext.Provider
+      value={{ userId: props.userId, isGameMaster: isGameMaster }}
+    >
       <div className="flex h-full flex-col items-center space-y-4 p-4">
         <h1 className="h-20 shrink  text-3xl font-bold">{lobby.name}</h1>
         <div className="flex grow flex-col items-center space-y-4">
@@ -64,7 +65,7 @@ const Lobby = (props: {
           )}
         </div>
       </div>
-    </IsGameMasterContext.Provider>
+    </PlayerContext.Provider>
   );
 };
 
