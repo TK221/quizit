@@ -21,13 +21,13 @@ import { useRouter } from "next/navigation";
 const formSchema = z.object({
   username: z
     .string()
+    .trim()
     .min(3, {
       message: "Username must be at least 3 characters long",
     })
     .max(20, {
       message: "Username must be at most 20 characters long",
-    })
-    .trim(),
+    }),
   lobbyId: z.string().min(1, { message: "Lobby-ID must be given" }),
 });
 

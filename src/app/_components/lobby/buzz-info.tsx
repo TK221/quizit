@@ -1,13 +1,17 @@
 "use client";
 
 import type Pusher from "pusher-js";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, CardHeader, CardTitle } from "../ui/card";
 import type Lobby from "./lobby";
 import HandleAnswer from "./handle-answer";
 import { usePlayerContext } from "~/app/_contexts/player";
 
 const BuzzInfo = (props: { pusher: Pusher; lobby: Lobby }) => {
+  const playerContext = usePlayerContext();
+
+  const [revealResult, setReveal] = useState<boolean | undefined>(undefined);
+
   const buzzAudio = useRef<HTMLAudioElement | undefined>(
     typeof Audio !== "undefined"
       ? new Audio("/sounds/buzzing-sound.mp3")
@@ -24,8 +28,6 @@ const BuzzInfo = (props: { pusher: Pusher; lobby: Lobby }) => {
       : undefined,
   );
 
-  const playerContext = usePlayerContext();
-
   useEffect(() => {
     props.pusher.bind("buzz", async () => {
       await buzzAudio.current?.play();
@@ -37,6 +39,9 @@ const BuzzInfo = (props: { pusher: Pusher; lobby: Lobby }) => {
       } else {
         await incorrectAudio.current?.play();
       }
+
+      setReveal(data.correct);
+      deleteRevealAfterTime();
     });
 
     return () => {
@@ -44,6 +49,12 @@ const BuzzInfo = (props: { pusher: Pusher; lobby: Lobby }) => {
       props.pusher.unbind("reveal");
     };
   }, [props.pusher]);
+
+  const deleteRevealAfterTime = () => {
+    setTimeout(() => {
+      setReveal(undefined);
+    }, 5000);
+  };
 
   return (
     <div>
@@ -54,7 +65,9 @@ const BuzzInfo = (props: { pusher: Pusher; lobby: Lobby }) => {
               ? "open for buzzing..."
               : props.lobby.buzzingPlayer
                 ? `${props.lobby.buzzingPlayer.username} buzzed!`
-                : "Closed"}
+                : revealResult !== undefined
+                  ? `The answer was ${revealResult ? "Correct" : "Incorrect"}`
+                  : "Closed"}
           </CardTitle>
         </CardHeader>
         {playerContext.isGameMaster && props.lobby.buzzingPlayer && (
