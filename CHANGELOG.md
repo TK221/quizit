@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/TK221/quizit/compare/v0.1.0...v0.1.1) (2024-04-02)
+
+
+### Bug Fixes
+
+* handle lobby not fund in LobbyPage component and wrong check on lobby status while buzzing ([5a7f59c](https://github.com/TK221/quizit/commit/5a7f59c210c152d54750eaa3a548829774a99060))
+
 ## [0.1.0](https://github.com/TK221/quizit/compare/v0.0.1...v0.1.0) (2024-03-29)
 
 
