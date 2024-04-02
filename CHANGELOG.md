@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/TK221/quizit/compare/v0.1.1...v0.2.0) (2024-04-02)
+
+
+### Features
+
+* Loading spinner ([e5231fe](https://github.com/TK221/quizit/commit/e5231fe8335d836f693d1298bc9fbabce0c2177f))
+
 ## [0.1.1](https://github.com/TK221/quizit/compare/v0.1.0...v0.1.1) (2024-04-02)
 
 
