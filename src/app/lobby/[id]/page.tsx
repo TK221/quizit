@@ -5,6 +5,7 @@ import { getLobby, isInLobby } from "~/server/game/lobby";
 import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
 import Lobby from "~/app/_components/lobby/lobby";
+import { TRPCError } from "@trpc/server";
 
 const LobbyPage = async ({ params }: { params: { id: string } }) => {
   unstable_noStore();
@@ -19,27 +20,32 @@ const LobbyPage = async ({ params }: { params: { id: string } }) => {
     );
   }
 
-  const lobby = getLobby(params.id);
+  try {
+    if (!isInLobby(params.id, session.user.id))
+      redirect(`/lobby?lobbyId=${params.id}`);
 
-  if (!lobby) {
+    const lobby = getLobby(params.id);
     return (
-      <div className="mt-20 flex justify-center text-2xl">Lobby not found</div>
+      <Lobby
+        pusherSettings={{
+          app_host: env.CLIENT_PUSHER_APP_HOST,
+          app_key: env.PUSHER_APP_KEY,
+          app_port: env.CLIENT_PUSHER_APP_PORT,
+        }}
+        lobbyId={params.id}
+        initialLobby={lobby}
+        userId={session.user.id}
+      />
     );
-  } else if (!isInLobby(lobby.id, session.user.id))
-    redirect(`/lobby?lobbyId=${params.id}`);
-
-  return (
-    <Lobby
-      pusherSettings={{
-        app_host: env.CLIENT_PUSHER_APP_HOST,
-        app_key: env.PUSHER_APP_KEY,
-        app_port: env.CLIENT_PUSHER_APP_PORT,
-      }}
-      lobbyId={params.id}
-      initialLobby={lobby}
-      userId={session.user.id}
-    />
-  );
+  } catch (e) {
+    if (e instanceof TRPCError) {
+      return (
+        <div className="mt-20 flex justify-center text-2xl">
+          Lobby not found
+        </div>
+      );
+    } else throw e;
+  }
 };
 
 export default LobbyPage;
