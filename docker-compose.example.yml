@@ -5,7 +5,7 @@ services:
       context: .
     ports:
       - 3000:3000
-    environment: 
+    environment:
       NEXTAUTH_SECRET: "NEXTAUTHSECRET"
       NEXTAUTH_URL: "http://localhost:3000"
       DISCORD_CLIENT_ID: "id"
@@ -21,7 +21,7 @@ services:
     depends_on:
       - db
       - pusher
-  
+
   db:
     image: postgres
     restart: always

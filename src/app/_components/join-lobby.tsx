@@ -26,14 +26,15 @@ const formSchema = z.object({
     })
     .max(20, {
       message: "Username must be at most 20 characters long",
-    }),
+    })
+    .trim(),
   lobbyId: z.string().min(1, { message: "Lobby-ID must be given" }),
 });
 
 const JoinLobby = (params: { lobbyId?: string }) => {
   const router = useRouter();
 
-  const createLobby = api.lobby.join.useMutation({
+  const joinLobby = api.lobby.join.useMutation({
     onSuccess(_, variables) {
       router.push(`/lobby/${variables.lobbyId}`);
     },
@@ -48,7 +49,7 @@ const JoinLobby = (params: { lobbyId?: string }) => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    createLobby.mutate(values);
+    joinLobby.mutate(values);
   };
 
   return (

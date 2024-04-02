@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useContext } from "react";
-import { Player } from "~/server/game/game";
+import React from "react";
+import { Player } from "~/server/game/lobby";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { api } from "~/trpc/react";
-import { IsGameMasterContext } from "./lobby";
+import { usePlayerContext } from "~/app/_contexts/player";
 
 const Player = (props: { lobbyId: string; player: Player }) => {
-  const isGameMaster = useContext(IsGameMasterContext);
+  const playerContext = usePlayerContext();
 
   const increaseScore = api.lobby.increaseScore.useMutation();
   const decreaseScore = api.lobby.decreaseScore.useMutation();
@@ -26,7 +26,7 @@ const Player = (props: { lobbyId: string; player: Player }) => {
           <div>
             Points: <b>{props.player.score}</b>
           </div>
-          {isGameMaster && (
+          {playerContext.isGameMaster && (
             <div className="flex w-full space-x-2">
               <div className="flex grow items-center justify-center">
                 <Button
