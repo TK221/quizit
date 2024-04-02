@@ -6,6 +6,8 @@ export interface Player {
   username: string;
   score: number;
   lobbyId: string;
+  correctAnswers: number;
+  wrongAnswers: number;
 }
 
 export interface Lobby {
@@ -65,6 +67,8 @@ export function joinLobby(
     userId: userId,
     username,
     score: 0,
+    correctAnswers: 0,
+    wrongAnswers: 0,
   });
 }
 

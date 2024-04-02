@@ -22,7 +22,7 @@ const HandleAnswer = (props: { lobbyId: string; buzzingPlayerId: string }) => {
   };
 
   return (
-    <CardFooter className="flex justify-between">
+    <CardFooter className="flex justify-between space-x-4">
       <Button onClick={() => handleAnswer(true)}>Correct</Button>
       <Button onClick={() => handleAnswer(false)} variant="destructive">
         Wrong

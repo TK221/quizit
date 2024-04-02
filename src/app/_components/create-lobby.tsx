@@ -21,10 +21,13 @@ import { useRouter } from "next/navigation";
 const formSchema = z.object({
   lobbyName: z
     .string()
+    .trim()
+    .min(1, {
+      message: "Lobby name must be at least 1 character long",
+    })
     .max(20, {
       message: "Lobby name must be at most 20 characters long",
-    })
-    .trim(),
+    }),
 });
 
 const CreateLobby = () => {

@@ -15,7 +15,7 @@ export const lobbyRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        lobbyName: z.string().min(1),
+        lobbyName: z.string().trim().min(1),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -26,7 +26,10 @@ export const lobbyRouter = createTRPCRouter({
 
   join: protectedProcedure
     .input(
-      z.object({ lobbyId: z.string().min(1), username: z.string().min(1) }),
+      z.object({
+        lobbyId: z.string().min(1),
+        username: z.string().trim().min(1),
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       Lobby.joinLobby(input.lobbyId, ctx.session.user.id, input.username);
@@ -82,12 +85,20 @@ export const lobbyRouter = createTRPCRouter({
     GameMaster.correctAnswer(input.lobbyId);
 
     await updateLobby(input.lobbyId);
+
+    await pusher.trigger(`private-lobby-${input.lobbyId}`, "reveal", {
+      correct: true,
+    });
   }),
 
   wrongAnswer: gameMasterProcedure.mutation(async ({ input }) => {
     GameMaster.wrongAnswer(input.lobbyId);
 
     await updateLobby(input.lobbyId);
+
+    await pusher.trigger(`private-lobby-${input.lobbyId}`, "reveal", {
+      correct: false,
+    });
   }),
 
   changeLobbyState: gameMasterProcedure
