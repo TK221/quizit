@@ -46,6 +46,7 @@ export function correctAnswer(lobbyId: string): void {
     throw new TRPCError({ code: "NOT_FOUND", message: "No player buzzing" });
 
   increasePlayerScore(lobbyId, buzzingPlayer.userId, 3);
+  buzzingPlayer.correctAnswers += 1;
 
   Lobby.resetBuzzingPlayer(lobbyId);
 }
@@ -54,6 +55,8 @@ export function wrongAnswer(lobbyId: string): void {
   const buzzingPlayer = Lobby.getBuzzingPlayer(lobbyId);
   if (!buzzingPlayer)
     throw new TRPCError({ code: "NOT_FOUND", message: "No player buzzing" });
+
+  buzzingPlayer.wrongAnswers += 1;
 
   const players = Lobby.getPlayers(lobbyId);
 
