@@ -1,11 +1,7 @@
 import React from "react";
 import { unstable_noStore } from "next/cache";
 import { env } from "~/env";
-import {
-  getLobby,
-  isPlayerGameMaster,
-  isPlayerInLobby,
-} from "~/server/game/lobby";
+import { getLobby, isInLobby } from "~/server/game/lobby";
 import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
 import Lobby from "~/app/_components/lobby/lobby";
@@ -29,12 +25,8 @@ const LobbyPage = async ({ params }: { params: { id: string } }) => {
     return (
       <div className="mt-20 flex justify-center text-2xl">Lobby not found</div>
     );
-  } else if (
-    !isPlayerInLobby(lobby.id, session.user.id) &&
-    !isPlayerGameMaster(lobby.id, session.user.id)
-  ) {
+  } else if (!isInLobby(lobby.id, session.user.id))
     redirect(`/lobby?lobbyId=${params.id}`);
-  }
 
   return (
     <Lobby
@@ -45,7 +37,7 @@ const LobbyPage = async ({ params }: { params: { id: string } }) => {
       }}
       lobbyId={params.id}
       initialLobby={lobby}
-      user={{ id: session.user.id }}
+      userId={session.user.id}
     />
   );
 };

@@ -54,7 +54,7 @@ export function joinLobby(
 ): void {
   const lobby = getLobby(lobbyId);
 
-  if (isPlayerInLobby(lobby.id, userId))
+  if (isPlayer(lobby.id, userId))
     throw new TRPCError({
       code: "CONFLICT",
       message: "Player already in lobby",
@@ -118,7 +118,7 @@ export function isLobbyExist(lobbyId: string): boolean {
   return games.has(lobbyId);
 }
 
-export function isPlayerInLobby(lobbyId: string, playerId: string): boolean {
+export function isInLobby(lobbyId: string, playerId: string): boolean {
   const lobby = getLobby(lobbyId);
 
   return (
@@ -127,7 +127,13 @@ export function isPlayerInLobby(lobbyId: string, playerId: string): boolean {
   );
 }
 
-export function isPlayerGameMaster(lobbyId: string, playerId: string): boolean {
+export function isPlayer(lobbyId: string, playerId: string): boolean {
+  const lobby = getLobby(lobbyId);
+
+  return lobby.players.find((p) => p.userId === playerId) !== undefined;
+}
+
+export function isGamemaster(lobbyId: string, playerId: string): boolean {
   const lobby = getLobby(lobbyId);
 
   return lobby.gameMaster === playerId;

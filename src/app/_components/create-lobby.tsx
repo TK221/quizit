@@ -19,9 +19,12 @@ import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-  lobbyName: z.string().max(20, {
-    message: "Lobby name must be at most 20 characters long",
-  }),
+  lobbyName: z
+    .string()
+    .max(20, {
+      message: "Lobby name must be at most 20 characters long",
+    })
+    .trim(),
 });
 
 const CreateLobby = () => {

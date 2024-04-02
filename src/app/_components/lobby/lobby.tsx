@@ -17,11 +17,12 @@ const Lobby = (props: {
   pusherSettings: PusherClientSettings;
   lobbyId: string;
   initialLobby: Lobby;
-  user: { id: string };
+  userId: string;
 }) => {
   const [pusher, setPusher] = useState<Pusher | null>(null);
   const [lobby, setLobby] = useState<Lobby>(props.initialLobby);
-  const isGameMaster = lobby.gameMaster === props.user.id;
+
+  const isGameMaster = lobby.gameMaster === props.userId;
 
   useEffect(() => {
     const p = pusherInit(props.pusherSettings, "/api/pusher/player");

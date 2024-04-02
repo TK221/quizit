@@ -15,7 +15,7 @@ import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 
 import { z } from "zod";
-import { isPlayerGameMaster, isPlayerInLobby } from "../game/lobby";
+import { isGamemaster, isInLobby } from "../game/lobby";
 
 /**
  * 1. CONTEXT
@@ -110,7 +110,7 @@ export const inLobbyProcedure = protectedProcedure
     }),
   )
   .use(({ ctx, input, next }) => {
-    const res = isPlayerInLobby(input.lobbyId, ctx.session.user.id);
+    const res = isInLobby(input.lobbyId, ctx.session.user.id);
 
     if (!res) {
       throw new TRPCError({
@@ -124,7 +124,7 @@ export const inLobbyProcedure = protectedProcedure
 
 export const gameMasterProcedure = inLobbyProcedure.use(
   ({ ctx, input, next }) => {
-    const res = isPlayerGameMaster(input.lobbyId, ctx.session.user.id);
+    const res = isGamemaster(input.lobbyId, ctx.session.user.id);
 
     if (!res) {
       throw new TRPCError({
