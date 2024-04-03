@@ -63,8 +63,8 @@ export function joinLobby(
     });
 
   lobby.players.push({
-    lobbyId: lobbyId,
-    userId: userId,
+    lobbyId,
+    userId,
     username,
     score: 0,
     correctAnswers: 0,

@@ -1,11 +1,11 @@
 import React from "react";
 import { unstable_noStore } from "next/cache";
 import { env } from "~/env";
-import { getLobby, isInLobby } from "~/server/game/lobby";
+import { getLobby, isInLobby, joinLobby } from "~/server/game/lobby";
 import { getServerAuthSession } from "~/server/auth";
-import { redirect } from "next/navigation";
 import Lobby from "~/app/_components/lobby/lobby";
 import { TRPCError } from "@trpc/server";
+import { updateLobby } from "~/server/api/routers/lobby";
 
 const LobbyPage = async ({ params }: { params: { id: string } }) => {
   unstable_noStore();
@@ -21,8 +21,10 @@ const LobbyPage = async ({ params }: { params: { id: string } }) => {
   }
 
   try {
-    if (!isInLobby(params.id, session.user.id))
-      redirect(`/lobby?lobbyId=${params.id}`);
+    if (!isInLobby(params.id, session.user.id)) {
+      joinLobby(params.id, session.user.id, session.user.name);
+      await updateLobby(params.id);
+    }
 
     const lobby = getLobby(params.id);
     return (
