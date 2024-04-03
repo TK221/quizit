@@ -117,7 +117,7 @@ export const lobbyRouter = createTRPCRouter({
     }),
 });
 
-async function updateLobby(lobbyId: string) {
+export async function updateLobby(lobbyId: string) {
   const lobby = Lobby.getLobby(lobbyId);
 
   await pusher.trigger(`private-lobby-${lobby.id}`, "update", {
