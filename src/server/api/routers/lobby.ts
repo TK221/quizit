@@ -28,11 +28,14 @@ export const lobbyRouter = createTRPCRouter({
     .input(
       z.object({
         lobbyId: z.string().min(1),
-        username: z.string().trim().min(1),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      Lobby.joinLobby(input.lobbyId, ctx.session.user.id, input.username);
+      Lobby.joinLobby(
+        input.lobbyId,
+        ctx.session.user.id,
+        ctx.session.user.name,
+      );
 
       await updateLobby(input.lobbyId);
     }),
