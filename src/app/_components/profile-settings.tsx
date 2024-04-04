@@ -18,7 +18,6 @@ import { Input } from "../_components/ui/input";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Toaster } from "./ui/sonner";
 
 const formSchema = z.object({
   username: z
