@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0](https://github.com/TK221/quizit/compare/v0.3.0...v0.4.0) (2024-04-04)
+
+
+### Features
+
+* account username as lobby username ([bec6161](https://github.com/TK221/quizit/commit/bec6161d01f66eba4b9607956ff59cccfc39c115))
+* change username through profile settings ([e5f2271](https://github.com/TK221/quizit/commit/e5f22719ae04a8d08f26e16664cfb7aa7d365a19))
+
 ## [0.3.0](https://github.com/TK221/quizit/compare/v0.2.0...v0.3.0) (2024-04-02)
 
 
