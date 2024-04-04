@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { TRPCReactProvider } from "~/trpc/react";
 import ThemeProvider from "./_components/theme-providers";
 import Navbar from "./_components/navbar/navbar";
+import { Toaster } from "./_components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,6 +38,7 @@ export default function RootLayout({
               <div className="flex grow flex-col overflow-scroll">
                 {children}
               </div>
+              <Toaster />
             </div>
           </ThemeProvider>
         </TRPCReactProvider>

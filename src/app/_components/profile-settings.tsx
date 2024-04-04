@@ -17,6 +17,8 @@ import {
 import { Input } from "../_components/ui/input";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Toaster } from "./ui/sonner";
 
 const formSchema = z.object({
   username: z
@@ -37,7 +39,13 @@ const ProfileSettings = (props: { username: string }) => {
   });
 
   const updateProfile = api.profile.update.useMutation({
-    onSuccess: () => router.refresh(),
+    onSuccess: () => {
+      toast.success("Profile successfully updated", {
+        description: "Changes can take a while to reflect",
+        duration: 5000,
+      });
+      router.refresh();
+    },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
