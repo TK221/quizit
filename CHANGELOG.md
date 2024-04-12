@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/TK221/quizit/compare/v0.4.0...v0.5.0) (2024-04-12)
+
+
+### Features
+
+* add question counter ([551e119](https://github.com/TK221/quizit/commit/551e119dc3256ee427a7dbd40e62ae18e2790f58))
+
 ## [0.4.0](https://github.com/TK221/quizit/compare/v0.3.0...v0.4.0) (2024-04-04)
 
 
