@@ -3,9 +3,9 @@
 import type Pusher from "pusher-js";
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardHeader, CardTitle } from "../ui/card";
-import type Lobby from "./lobby";
 import HandleAnswer from "./handle-answer";
 import { usePlayerContext } from "~/app/_contexts/player";
+import { type Lobby } from "~/server/game/lobby";
 
 const BuzzInfo = (props: { pusher: Pusher; lobby: Lobby }) => {
   const playerContext = usePlayerContext();

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Player } from "~/server/game/lobby";
+import { type Player as GamePlayer } from "~/server/game/lobby";
 import {
   Card,
   CardHeader,
@@ -14,7 +14,7 @@ import { MinusIcon, PlusIcon } from "lucide-react";
 import { api } from "~/trpc/react";
 import { usePlayerContext } from "~/app/_contexts/player";
 
-const Player = (props: { lobbyId: string; player: Player }) => {
+const Player = (props: { lobbyId: string; player: GamePlayer }) => {
   const playerContext = usePlayerContext();
 
   const increaseScore = api.lobby.increaseScore.useMutation();
