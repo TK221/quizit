@@ -2,7 +2,7 @@
 
 import type Pusher from "pusher-js";
 import React, { useEffect, useState } from "react";
-import { Lobby } from "~/server/game/lobby";
+import { type Lobby as GameLobby } from "~/server/game/lobby";
 import pusherInit, {
   type PusherClientSettings,
 } from "~/server/pusher/pusher-client";
@@ -12,15 +12,16 @@ import Controll from "./controll";
 import BuzzInfo from "./buzz-info";
 import { PlayerContext } from "~/app/_contexts/player";
 import LoadingSpinner from "../loading-spinner";
+import QuestionCounter from "./question-counter";
 
 const Lobby = (props: {
   pusherSettings: PusherClientSettings;
   lobbyId: string;
-  initialLobby: Lobby;
+  initialLobby: GameLobby;
   userId: string;
 }) => {
   const [pusher, setPusher] = useState<Pusher | null>(null);
-  const [lobby, setLobby] = useState<Lobby>(props.initialLobby);
+  const [lobby, setLobby] = useState<GameLobby>(props.initialLobby);
 
   const isGameMaster = lobby.gameMaster === props.userId;
 
@@ -30,7 +31,7 @@ const Lobby = (props: {
 
     p.subscribe(`private-lobby-${props.lobbyId}`).bind(
       "update",
-      (data: { lobby: Lobby }) => {
+      (data: { lobby: GameLobby }) => {
         setLobby(data.lobby);
       },
     );
@@ -50,7 +51,11 @@ const Lobby = (props: {
 
   return (
     <PlayerContext.Provider
-      value={{ userId: props.userId, isGameMaster: isGameMaster }}
+      value={{
+        userId: props.userId,
+        isGameMaster: isGameMaster,
+        lobbyId: props.lobbyId,
+      }}
     >
       <div className="flex h-full flex-col items-center space-y-4 p-4">
         <h1 className="h-20 shrink  text-3xl font-bold">{lobby.name}</h1>
@@ -61,6 +66,10 @@ const Lobby = (props: {
             <Buzzer lobbyId={props.lobbyId} lobbyState={lobby.open} />
           )}
           <BuzzInfo pusher={pusher} lobby={lobby} />
+          <QuestionCounter
+            currentQuestion={lobby.currentQuestion}
+            maxQuestions={lobby.maxQuestions}
+          />
         </div>
         <div>
           {lobby.players.length > 0 ? (

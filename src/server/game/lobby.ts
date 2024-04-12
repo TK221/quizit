@@ -17,13 +17,19 @@ export interface Lobby {
   gameMaster: string;
   open: boolean;
   buzzingPlayer?: Player;
+  currentQuestion: number;
+  maxQuestions: number;
 }
 
 // --- Game Elements ---
 const games = new Map<string, Lobby>();
 
 // --- Game Logic ---
-export function createLobby(userId: string, lobbyName: string): string {
+export function createLobby(
+  userId: string,
+  lobbyName: string,
+  maxQuestions: number,
+): string {
   const lobbyId = Math.random().toString(36).slice(2);
 
   if (isLobbyExist(lobbyId))
@@ -35,6 +41,8 @@ export function createLobby(userId: string, lobbyName: string): string {
     players: [],
     gameMaster: userId,
     open: false,
+    currentQuestion: 0,
+    maxQuestions,
   });
 
   return lobbyId;
