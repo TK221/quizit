@@ -47,6 +47,10 @@ export const authOptions: NextAuthOptions = {
         id: user.id,
       },
     }),
+    async redirect({ url, baseUrl }) {
+      if (url === baseUrl) return `${baseUrl}/verify`;
+      return url;
+    },
   },
   adapter: DrizzleAdapter(db, createTable) as Adapter,
   providers: [
