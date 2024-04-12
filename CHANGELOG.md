@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/TK221/quizit/compare/v0.5.0...v0.5.1) (2024-04-12)
+
+
+### Bug Fixes
+
+* wrong lobby type import ([43f5bdd](https://github.com/TK221/quizit/commit/43f5bdd626e0a40d5fa288df4b06acb9eed50166))
+
 ## [0.5.0](https://github.com/TK221/quizit/compare/v0.4.0...v0.5.0) (2024-04-12)
 
 
