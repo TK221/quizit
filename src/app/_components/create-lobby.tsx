@@ -7,6 +7,7 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -28,6 +29,10 @@ const formSchema = z.object({
     .max(20, {
       message: "Lobby name must be at most 20 characters long",
     }),
+  maxQuestions: z
+    .number()
+    .int({ message: "Questions count must be an integer" })
+    .positive({ message: "Questions count must be positive" }),
 });
 
 const CreateLobby = () => {
@@ -43,11 +48,15 @@ const CreateLobby = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       lobbyName: "",
+      maxQuestions: 10,
     },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    createLobby.mutate({ lobbyName: values.lobbyName });
+    createLobby.mutate({
+      lobbyName: values.lobbyName,
+      maxQuestions: values.maxQuestions,
+    });
   };
 
   return (
@@ -65,6 +74,22 @@ const CreateLobby = () => {
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="maxQuestions"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Amount of Questions</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    You are not restricted to this amount.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

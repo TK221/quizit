@@ -47,6 +47,7 @@ export function correctAnswer(lobbyId: string): void {
 
   increasePlayerScore(lobbyId, buzzingPlayer.userId, 3);
   buzzingPlayer.correctAnswers += 1;
+  nextQuestion(lobbyId);
 
   Lobby.resetBuzzingPlayer(lobbyId);
 }
@@ -67,4 +68,18 @@ export function wrongAnswer(lobbyId: string): void {
   });
 
   Lobby.resetBuzzingPlayer(lobbyId);
+}
+
+export function nextQuestion(lobbyId: string): void {
+  const lobby = Lobby.getLobby(lobbyId);
+
+  lobby.currentQuestion += 1;
+}
+
+export function previousQuestion(lobbyId: string): void {
+  const lobby = Lobby.getLobby(lobbyId);
+
+  if (lobby.currentQuestion > 0) {
+    lobby.currentQuestion -= 1;
+  }
 }
