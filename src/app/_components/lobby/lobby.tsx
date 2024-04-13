@@ -13,6 +13,8 @@ import BuzzInfo from "./buzz-info";
 import { PlayerContext } from "~/app/_contexts/player";
 import LoadingSpinner from "../loading-spinner";
 import QuestionCounter from "./question-counter";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Lobby = (props: {
   pusherSettings: PusherClientSettings;
@@ -20,6 +22,8 @@ const Lobby = (props: {
   initialLobby: GameLobby;
   userId: string;
 }) => {
+  const router = useRouter();
+
   const [pusher, setPusher] = useState<Pusher | null>(null);
   const [lobby, setLobby] = useState<GameLobby>(props.initialLobby);
 
@@ -29,17 +33,31 @@ const Lobby = (props: {
     const p = pusherInit(props.pusherSettings, "/api/pusher/player");
     setPusher(p);
 
-    p.subscribe(`private-lobby-${props.lobbyId}`).bind(
-      "update",
-      (data: { lobby: GameLobby }) => {
+    p.subscribe(`private-lobby-${props.lobbyId}`)
+      .bind("update", (data: { lobby: GameLobby }) => {
         setLobby(data.lobby);
-      },
-    );
+      })
+      .bind("close-lobby", (data: { canceled: boolean }) => {
+        if (data.canceled)
+          toast.warning("Your game has been canceled", {
+            description:
+              "The Gamemaster has canceled the game. Lobby progress is lost.",
+            duration: 10000,
+          });
+        else
+          toast.success("The game has ended", {
+            description:
+              "The Gamemaster has ended the game. Lobby progress is saved and added to the Leaderboard.",
+            duration: 10000,
+          });
+
+        router.push("/");
+      });
 
     return () => {
       p.unsubscribe(`private-lobby-${props.lobbyId}`);
     };
-  }, [props.pusherSettings, props.lobbyId]);
+  }, [props.pusherSettings, props.lobbyId, router]);
 
   if (!pusher) {
     return (

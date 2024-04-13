@@ -15,6 +15,13 @@
       "when": 1712152173835,
       "tag": "0001_cultured_sally_floyd",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1712959688238,
+      "tag": "0002_blushing_wilson_fisk",
+      "breakpoints": true
     }
   ]
 }

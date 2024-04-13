@@ -1,26 +1,19 @@
-import { eq } from "drizzle-orm";
-import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { users } from "~/server/db/schema";
+import { profiles } from "~/server/db/schema";
+import { createTRPCRouter, publicProcedure } from "../trpc";
+import { desc } from "drizzle-orm";
 
 export const profileRouter = createTRPCRouter({
-  get: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.db.query.users.findFirst({ columns: { name: true } });
+  getTopProfiles: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.db.query.profiles.findMany({
+      orderBy: [desc(profiles.gamesWon)],
+      limit: 10,
+      with: {
+        user: {
+          columns: {
+            name: true,
+          },
+        },
+      },
+    });
   }),
-
-  update: protectedProcedure
-    .input(
-      z.object({
-        name: z.string().trim().min(1).max(20),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const updatedUserId = await ctx.db
-        .update(users)
-        .set({ name: input.name })
-        .where(eq(users.id, ctx.session.user.id))
-        .returning({ updatedId: users.id });
-
-      if (updatedUserId.length === 0) throw new Error("User not found");
-    }),
 });

@@ -1,5 +1,6 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { lobbyRouter } from "./routers/lobby";
+import { userRouter } from "./routers/user";
 import { profileRouter } from "./routers/profile";
 
 /**
@@ -9,6 +10,7 @@ import { profileRouter } from "./routers/profile";
  */
 export const appRouter = createTRPCRouter({
   lobby: lobbyRouter,
+  user: userRouter,
   profile: profileRouter,
 });
 

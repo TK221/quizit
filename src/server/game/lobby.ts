@@ -57,6 +57,10 @@ export function getLobby(lobbyId: string): Lobby {
   return lobby;
 }
 
+export function deleteLobby(lobbyId: string): void {
+  games.delete(lobbyId);
+}
+
 export function joinLobby(
   lobbyId: string,
   userId: string,
@@ -155,4 +159,14 @@ export function isLobbyOpen(lobbyId: string): boolean {
   const lobby = getLobby(lobbyId);
 
   return lobby.open;
+}
+
+export function getPlayerWithHighestScore(lobbyId: string): Player | null {
+  const players = getPlayers(lobbyId);
+
+  if (players.length === 0) return null;
+
+  return players.reduce((prev, current) =>
+    prev.score > current.score ? prev : current,
+  );
 }
