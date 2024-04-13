@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/TK221/quizit/compare/v0.6.0...v0.6.1) (2024-04-13)
+
+
+### Bug Fixes
+
+* wrong integer parsing of maximum questions ([05dcb2f](https://github.com/TK221/quizit/commit/05dcb2fedf01112fb96f74ee34018d55870760bc))
+
 ## [0.6.0](https://github.com/TK221/quizit/compare/v0.5.1...v0.6.0) (2024-04-13)
 
 
