@@ -29,10 +29,7 @@ const formSchema = z.object({
     .max(20, {
       message: "Lobby name must be at most 20 characters long",
     }),
-  maxQuestions: z
-    .number()
-    .int({ message: "Questions count must be an integer" })
-    .positive({ message: "Questions count must be positive" }),
+  maxQuestions: z.string().transform(Number).pipe(z.number().int().positive()),
 });
 
 const CreateLobby = () => {
@@ -85,7 +82,7 @@ const CreateLobby = () => {
                 <FormItem>
                   <FormLabel>Amount of Questions</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input type="number" {...field} />
                   </FormControl>
                   <FormDescription>
                     You are not restricted to this amount.
