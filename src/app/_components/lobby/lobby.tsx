@@ -86,7 +86,7 @@ const Lobby = (props: {
           <BuzzInfo pusher={pusher} lobby={lobby} />
           <QuestionCounter
             currentQuestion={lobby.currentQuestion}
-            maxQuestions={lobby.maxQuestions}
+            maxQuestions={lobby.settings.maxQuestions}
           />
         </div>
         <div>

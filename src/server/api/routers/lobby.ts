@@ -15,16 +15,18 @@ export const lobbyRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        lobbyName: z.string().trim().min(1),
-        maxQuestions: z.number().int(),
+        lobbyName: z.string().trim().min(1).max(50),
+        maxQuestions: z.number().int().gte(1).lte(500),
+        correctAnswerPoints: z.number().int().gte(-500).lte(500),
+        wrongAnswerPoints: z.number().int().gte(-500).lte(500),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const lobby = Lobby.createLobby(
-        ctx.session.user.id,
-        input.lobbyName,
-        input.maxQuestions,
-      );
+      const lobby = Lobby.createLobby(ctx.session.user.id, input.lobbyName, {
+        maxQuestions: input.maxQuestions,
+        correctAnswerPoints: input.correctAnswerPoints,
+        wrongAnswerPoints: input.wrongAnswerPoints,
+      });
 
       return lobby;
     }),

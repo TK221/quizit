@@ -18,7 +18,13 @@ export interface Lobby {
   open: boolean;
   buzzingPlayer?: Player;
   currentQuestion: number;
+  settings: LobbySettings;
+}
+
+export interface LobbySettings {
   maxQuestions: number;
+  correctAnswerPoints: number;
+  wrongAnswerPoints: number;
 }
 
 // --- Game Elements ---
@@ -28,7 +34,7 @@ const games = new Map<string, Lobby>();
 export function createLobby(
   userId: string,
   lobbyName: string,
-  maxQuestions: number,
+  settings: LobbySettings,
 ): string {
   const lobbyId = Math.random().toString(36).slice(2);
 
@@ -41,8 +47,8 @@ export function createLobby(
     players: [],
     gameMaster: userId,
     open: false,
-    currentQuestion: 0,
-    maxQuestions,
+    currentQuestion: 1,
+    settings,
   });
 
   return lobbyId;
@@ -129,6 +135,22 @@ export function getBuzzingPlayer(lobbyId: string): Player | undefined {
   return lobby.buzzingPlayer;
 }
 
+export function getPlayerWithHighestScore(lobbyId: string): Player | null {
+  const players = getPlayers(lobbyId);
+
+  if (players.length === 0) return null;
+
+  return players.reduce((prev, current) =>
+    prev.score > current.score ? prev : current,
+  );
+}
+
+export function getLobbySettings(lobbyId: string): LobbySettings {
+  const lobby = getLobby(lobbyId);
+
+  return lobby.settings;
+}
+
 // --- Help functions ---
 export function isLobbyExist(lobbyId: string): boolean {
   return games.has(lobbyId);
@@ -159,14 +181,4 @@ export function isLobbyOpen(lobbyId: string): boolean {
   const lobby = getLobby(lobbyId);
 
   return lobby.open;
-}
-
-export function getPlayerWithHighestScore(lobbyId: string): Player | null {
-  const players = getPlayers(lobbyId);
-
-  if (players.length === 0) return null;
-
-  return players.reduce((prev, current) =>
-    prev.score > current.score ? prev : current,
-  );
 }

@@ -48,7 +48,13 @@ export function correctAnswer(lobbyId: string): void {
   if (!buzzingPlayer)
     throw new TRPCError({ code: "NOT_FOUND", message: "No player buzzing" });
 
-  increasePlayerScore(lobbyId, buzzingPlayer.userId, 3);
+  const lobbySettings = Lobby.getLobbySettings(lobbyId);
+
+  increasePlayerScore(
+    lobbyId,
+    buzzingPlayer.userId,
+    lobbySettings.correctAnswerPoints,
+  );
   buzzingPlayer.correctAnswers += 1;
   nextQuestion(lobbyId);
 
@@ -64,10 +70,16 @@ export function wrongAnswer(lobbyId: string): void {
 
   const players = Lobby.getPlayers(lobbyId);
 
+  const lobbySettings = Lobby.getLobbySettings(lobbyId);
+
   // Increase score for all players except the one who buzzed
   players.forEach((player) => {
     if (player.userId !== buzzingPlayer.userId)
-      increasePlayerScore(lobbyId, player.userId, 1);
+      increasePlayerScore(
+        lobbyId,
+        player.userId,
+        lobbySettings.wrongAnswerPoints,
+      );
   });
 
   Lobby.resetBuzzingPlayer(lobbyId);

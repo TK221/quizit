@@ -29,7 +29,21 @@ const formSchema = z.object({
     .max(20, {
       message: "Lobby name must be at most 20 characters long",
     }),
-  maxQuestions: z.string().transform(Number).pipe(z.number().int().positive()),
+  maxQuestions: z
+    .string()
+    .or(z.number())
+    .transform(Number)
+    .pipe(z.number().int().gte(1).lte(500)),
+  correctAnswerPoints: z
+    .string()
+    .or(z.number())
+    .transform(Number)
+    .pipe(z.number().int().gte(-500).lte(500)),
+  wrongAnswerPoints: z
+    .string()
+    .or(z.number())
+    .transform(Number)
+    .pipe(z.number().int().gte(-500).lte(500)),
 });
 
 const CreateLobby = () => {
@@ -46,6 +60,8 @@ const CreateLobby = () => {
     defaultValues: {
       lobbyName: "",
       maxQuestions: 10,
+      correctAnswerPoints: 3,
+      wrongAnswerPoints: 1,
     },
   });
 
@@ -53,6 +69,8 @@ const CreateLobby = () => {
     createLobby.mutate({
       lobbyName: values.lobbyName,
       maxQuestions: values.maxQuestions,
+      correctAnswerPoints: values.correctAnswerPoints,
+      wrongAnswerPoints: values.wrongAnswerPoints,
     });
   };
 
@@ -86,6 +104,40 @@ const CreateLobby = () => {
                   </FormControl>
                   <FormDescription>
                     You are not restricted to this amount.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="correctAnswerPoints"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Points for correct answer</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Number of points a player receives for a correct answer
+                    (Negative values are allowed).
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="wrongAnswerPoints"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Points for wrong answer</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Number of points the other players receive for a wrong
+                    answer from a player (negative values are allowed).
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
