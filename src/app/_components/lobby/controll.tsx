@@ -3,12 +3,16 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { api } from "~/trpc/react";
+import CloseGame from "./close-game";
 
 const Controll = (props: { lobbyId: string }) => {
   const changeState = api.lobby.changeLobbyState.useMutation();
 
   return (
-    <div className="flex-col place-items-center space-y-2">
+    <div className="flex-col items-center space-y-6">
+      <div className="flex justify-center">
+        <CloseGame lobbyId={props.lobbyId} />
+      </div>
       <div className="flex space-x-4">
         <Button
           variant="default"

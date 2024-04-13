@@ -1,5 +1,8 @@
 import { TRPCError } from "@trpc/server";
 import * as Lobby from "./lobby";
+import { db } from "../db";
+import { eq } from "drizzle-orm";
+import { profiles } from "../db/schema";
 
 export function openLobby(lobbyId: string): void {
   const lobby = Lobby.getLobby(lobbyId);
@@ -82,4 +85,33 @@ export function previousQuestion(lobbyId: string): void {
   if (lobby.currentQuestion > 0) {
     lobby.currentQuestion -= 1;
   }
+}
+
+export async function endGame(lobbyId: string): Promise<void> {
+  const players = Lobby.getPlayers(lobbyId);
+
+  const winnerPlayerId = Lobby.getPlayerWithHighestScore(lobbyId)?.userId;
+
+  if (!winnerPlayerId) return Lobby.deleteLobby(lobbyId);
+
+  for (const player of players) {
+    const playerProfile = await db.query.profiles.findFirst({
+      where: eq(profiles.userId, player.userId),
+    });
+
+    if (playerProfile) {
+      await db
+        .update(profiles)
+        .set({
+          gamesPlayed: playerProfile.gamesPlayed + 1,
+          gamesWon:
+            playerProfile.gamesWon + (player.userId === winnerPlayerId ? 1 : 0),
+          correctAnswers: playerProfile.correctAnswers + player.correctAnswers,
+          wrongAnswers: playerProfile.wrongAnswers + player.wrongAnswers,
+        })
+        .where(eq(profiles.userId, player.userId));
+    }
+  }
+
+  Lobby.deleteLobby(lobbyId);
 }

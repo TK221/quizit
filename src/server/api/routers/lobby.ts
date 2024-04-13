@@ -132,6 +132,22 @@ export const lobbyRouter = createTRPCRouter({
 
     await updateLobby(input.lobbyId);
   }),
+
+  endGame: gameMasterProcedure.mutation(async ({ input }) => {
+    await GameMaster.endGame(input.lobbyId);
+
+    await pusher.trigger(`private-lobby-${input.lobbyId}`, "close-lobby", {
+      canceled: false,
+    });
+  }),
+
+  cancelGame: gameMasterProcedure.mutation(async ({ input }) => {
+    Lobby.deleteLobby(input.lobbyId);
+
+    await pusher.trigger(`private-lobby-${input.lobbyId}`, "close-lobby", {
+      canceled: true,
+    });
+  }),
 });
 
 export async function updateLobby(lobbyId: string) {
