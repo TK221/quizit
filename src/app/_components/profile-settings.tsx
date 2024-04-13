@@ -37,7 +37,7 @@ const ProfileSettings = (props: { username: string }) => {
     },
   });
 
-  const updateProfile = api.profile.update.useMutation({
+  const updateProfile = api.user.update.useMutation({
     onSuccess: () => {
       toast.success("Profile successfully updated", {
         description: "Changes can take a while to reflect",
