@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.6.0](https://github.com/TK221/quizit/compare/v0.5.1...v0.6.0) (2024-04-13)
+
+
+### Features
+
+* add profile table ([1059779](https://github.com/TK221/quizit/commit/10597794cba763af99cb83088b8edf00f9ecb222))
+* add verification page and redirect to it after authentication ([8af1210](https://github.com/TK221/quizit/commit/8af12105633e08dd8bb576dc04c8e583b0d01921))
+* close and end game functionality ([f7123ce](https://github.com/TK221/quizit/commit/f7123ce6c297dd56fb2a72bc3ed0e4ebb35875be))
+* leaderboard ([04d5f16](https://github.com/TK221/quizit/commit/04d5f1631f62331307f24e733b25c0e13a665b99))
+
 ## [0.5.1](https://github.com/TK221/quizit/compare/v0.5.0...v0.5.1) (2024-04-12)
 
 
