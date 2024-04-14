@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { usePlayerContext } from "~/app/_contexts/player";
 import { api } from "~/trpc/react";
+import ShowGameMaster from "../show-gamemaster";
 
 const QuestionCounter = (props: {
   currentQuestion: number;
@@ -17,7 +18,7 @@ const QuestionCounter = (props: {
 
   return (
     <div className="flex items-center justify-center space-x-2">
-      {playerContext.isGameMaster && (
+      <ShowGameMaster>
         <Button
           variant="outline"
           size="icon"
@@ -27,13 +28,13 @@ const QuestionCounter = (props: {
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-      )}
+      </ShowGameMaster>
       <div className="space-x-2 border p-2">
         <span className="text-s">Question:</span>
         <span className="text-s font-bold">{props.currentQuestion}</span>
         <span className="text-s">/ {props.maxQuestions}</span>
       </div>
-      {playerContext.isGameMaster && (
+      <ShowGameMaster>
         <Button
           variant="outline"
           size="icon"
@@ -43,7 +44,7 @@ const QuestionCounter = (props: {
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
-      )}
+      </ShowGameMaster>
     </div>
   );
 };

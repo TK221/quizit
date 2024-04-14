@@ -12,11 +12,9 @@ import {
 import { Button } from "../ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { api } from "~/trpc/react";
-import { usePlayerContext } from "~/app/_contexts/player";
+import ShowGameMaster from "../show-gamemaster";
 
 const Player = (props: { lobbyId: string; player: GamePlayer }) => {
-  const playerContext = usePlayerContext();
-
   const increaseScore = api.lobby.increaseScore.useMutation();
   const decreaseScore = api.lobby.decreaseScore.useMutation();
 
@@ -40,7 +38,7 @@ const Player = (props: { lobbyId: string; player: GamePlayer }) => {
           </p>
         </div>
       </CardContent>
-      {playerContext.isGameMaster && (
+      <ShowGameMaster>
         <CardFooter className="flex justify-between">
           <div className="flex items-center">
             <Button
@@ -71,7 +69,7 @@ const Player = (props: { lobbyId: string; player: GamePlayer }) => {
             </Button>
           </div>
         </CardFooter>
-      )}
+      </ShowGameMaster>
     </Card>
   );
 };

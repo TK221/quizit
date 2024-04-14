@@ -15,6 +15,8 @@ import LoadingSpinner from "../loading-spinner";
 import QuestionCounter from "./question-counter";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import ShowGameMaster from "../show-gamemaster";
+import ShowPlayers from "../show-players";
 
 const Lobby = (props: {
   pusherSettings: PusherClientSettings;
@@ -78,11 +80,12 @@ const Lobby = (props: {
       <div className="flex h-full flex-col items-center space-y-4 p-4">
         <h1 className="h-20 shrink  text-3xl font-bold">{lobby.name}</h1>
         <div className="flex grow flex-col items-center space-y-4">
-          {isGameMaster ? (
-            <Controll lobbyId={props.lobbyId} />
-          ) : (
+          <ShowPlayers>
             <Buzzer lobbyId={props.lobbyId} lobbyState={lobby.open} />
-          )}
+          </ShowPlayers>
+          <ShowGameMaster>
+            <Controll lobbyId={props.lobbyId} />
+          </ShowGameMaster>
           <BuzzInfo pusher={pusher} lobby={lobby} />
           <QuestionCounter
             currentQuestion={lobby.currentQuestion}
