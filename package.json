@@ -10,7 +10,8 @@
     "generate": "drizzle-kit generate:pg",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "check:all": "next lint && prettier . --write && next build"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^0.3.6",
