@@ -5,12 +5,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { Card, CardHeader, CardTitle } from "../ui/card";
 import HandleAnswer from "./handle-answer";
 import { usePlayerContext } from "~/app/_contexts/player";
-import { type Lobby } from "~/server/game/lobby";
+import { type Player, type Lobby } from "~/server/game/lobby";
 
 const BuzzInfo = (props: { pusher: Pusher; lobby: Lobby }) => {
   const playerContext = usePlayerContext();
 
-  const [revealResult, setReveal] = useState<boolean | undefined>(undefined);
+  const [revealResult, setReveal] = useState<
+    { correct: boolean; playerName: string } | undefined
+  >(undefined);
 
   const buzzAudio = useRef<HTMLAudioElement | undefined>(
     typeof Audio !== "undefined"
@@ -33,16 +35,19 @@ const BuzzInfo = (props: { pusher: Pusher; lobby: Lobby }) => {
       await buzzAudio.current?.play();
     });
 
-    props.pusher.bind("reveal", async (data: { correct: boolean }) => {
-      if (data.correct) {
-        await correctAudio.current?.play();
-      } else {
-        await incorrectAudio.current?.play();
-      }
+    props.pusher.bind(
+      "reveal",
+      async (data: { correct: boolean; player: Player }) => {
+        if (data.correct) {
+          await correctAudio.current?.play();
+        } else {
+          await incorrectAudio.current?.play();
+        }
 
-      setReveal(data.correct);
-      deleteRevealAfterTime();
-    });
+        setReveal({ correct: data.correct, playerName: data.player.username });
+        deleteRevealAfterTime();
+      },
+    );
 
     return () => {
       props.pusher.unbind("buzz");
@@ -66,7 +71,7 @@ const BuzzInfo = (props: { pusher: Pusher; lobby: Lobby }) => {
               : props.lobby.buzzingPlayer
                 ? `${props.lobby.buzzingPlayer.username} buzzed!`
                 : revealResult !== undefined
-                  ? `The answer was ${revealResult ? "Correct" : "Incorrect"}`
+                  ? `The answer of ${revealResult.playerName} was ${revealResult.correct ? "Correct" : "Incorrect"}`
                   : "Closed"}
           </CardTitle>
         </CardHeader>

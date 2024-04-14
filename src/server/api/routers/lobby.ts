@@ -91,25 +91,43 @@ export const lobbyRouter = createTRPCRouter({
       await updateLobby(input.lobbyId);
     }),
 
-  correctAnswer: gameMasterProcedure.mutation(async ({ input }) => {
-    GameMaster.correctAnswer(input.lobbyId);
+  correctAnswer: gameMasterProcedure
+    .input(
+      z.object({
+        userId: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      GameMaster.correctAnswer(input.lobbyId, input.userId);
 
-    await updateLobby(input.lobbyId);
+      const player = Lobby.getPlayer(input.lobbyId, input.userId);
 
-    await pusher.trigger(`private-lobby-${input.lobbyId}`, "reveal", {
-      correct: true,
-    });
-  }),
+      await updateLobby(input.lobbyId);
 
-  wrongAnswer: gameMasterProcedure.mutation(async ({ input }) => {
-    GameMaster.wrongAnswer(input.lobbyId);
+      await pusher.trigger(`private-lobby-${input.lobbyId}`, "reveal", {
+        correct: true,
+        player: player,
+      });
+    }),
 
-    await updateLobby(input.lobbyId);
+  wrongAnswer: gameMasterProcedure
+    .input(
+      z.object({
+        userId: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      GameMaster.wrongAnswer(input.lobbyId, input.userId);
 
-    await pusher.trigger(`private-lobby-${input.lobbyId}`, "reveal", {
-      correct: false,
-    });
-  }),
+      const player = Lobby.getPlayer(input.lobbyId, input.userId);
+
+      await updateLobby(input.lobbyId);
+
+      await pusher.trigger(`private-lobby-${input.lobbyId}`, "reveal", {
+        correct: false,
+        player: player,
+      });
+    }),
 
   changeLobbyState: gameMasterProcedure
     .input(z.object({ open: z.boolean() }))

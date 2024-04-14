@@ -13,10 +13,12 @@ const HandleAnswer = (props: { lobbyId: string; buzzingPlayerId: string }) => {
     if (correct) {
       correctAnswer.mutate({
         lobbyId: props.lobbyId,
+        userId: props.buzzingPlayerId,
       });
     } else {
       wrongAnswer.mutate({
         lobbyId: props.lobbyId,
+        userId: props.buzzingPlayerId,
       });
     }
   };

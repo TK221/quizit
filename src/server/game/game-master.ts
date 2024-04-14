@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import * as Lobby from "./lobby";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
@@ -43,30 +42,26 @@ export function decreasePlayerScore(
   }
 }
 
-export function correctAnswer(lobbyId: string): void {
-  const buzzingPlayer = Lobby.getBuzzingPlayer(lobbyId);
-  if (!buzzingPlayer)
-    throw new TRPCError({ code: "NOT_FOUND", message: "No player buzzing" });
+export function correctAnswer(lobbyId: string, playerId: string): void {
+  const player = Lobby.getPlayer(lobbyId, playerId);
 
   const lobbySettings = Lobby.getLobbySettings(lobbyId);
 
   increasePlayerScore(
     lobbyId,
-    buzzingPlayer.userId,
+    player.userId,
     lobbySettings.correctAnswerPoints,
   );
-  buzzingPlayer.correctAnswers += 1;
+  player.correctAnswers += 1;
   nextQuestion(lobbyId);
 
   Lobby.resetBuzzingPlayer(lobbyId);
 }
 
-export function wrongAnswer(lobbyId: string): void {
-  const buzzingPlayer = Lobby.getBuzzingPlayer(lobbyId);
-  if (!buzzingPlayer)
-    throw new TRPCError({ code: "NOT_FOUND", message: "No player buzzing" });
+export function wrongAnswer(lobbyId: string, playerId: string): void {
+  const wrongAnswerPlayer = Lobby.getPlayer(lobbyId, playerId);
 
-  buzzingPlayer.wrongAnswers += 1;
+  wrongAnswerPlayer.wrongAnswers += 1;
 
   const players = Lobby.getPlayers(lobbyId);
 
@@ -74,7 +69,7 @@ export function wrongAnswer(lobbyId: string): void {
 
   // Increase score for all players except the one who buzzed
   players.forEach((player) => {
-    if (player.userId !== buzzingPlayer.userId)
+    if (player.userId !== wrongAnswerPlayer.userId)
       increasePlayerScore(
         lobbyId,
         player.userId,
