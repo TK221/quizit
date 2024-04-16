@@ -9,7 +9,7 @@ const Controll = (props: { lobbyId: string }) => {
   const changeState = api.lobby.changeLobbyState.useMutation();
 
   return (
-    <div className="flex-col items-center space-y-6">
+    <div className="flex-col items-center space-y-4">
       <div className="flex justify-center">
         <CloseGame lobbyId={props.lobbyId} />
       </div>

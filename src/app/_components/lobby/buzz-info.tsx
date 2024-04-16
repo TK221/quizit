@@ -2,7 +2,6 @@
 
 import type Pusher from "pusher-js";
 import React, { useEffect, useRef, useState } from "react";
-import { Card, CardHeader, CardTitle } from "../ui/card";
 import HandleAnswer from "./handle-answer";
 import { usePlayerContext } from "~/app/_contexts/player";
 import { type Player, type Lobby } from "~/server/game/lobby";
@@ -62,26 +61,22 @@ const BuzzInfo = (props: { pusher: Pusher; lobby: Lobby }) => {
   };
 
   return (
-    <div>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-center">
-            {props.lobby.open
-              ? "open for buzzing..."
-              : props.lobby.buzzingPlayer
-                ? `${props.lobby.buzzingPlayer.username} buzzed!`
-                : revealResult !== undefined
-                  ? `The answer of ${revealResult.playerName} was ${revealResult.correct ? "Correct" : "Incorrect"}`
-                  : "Closed"}
-          </CardTitle>
-        </CardHeader>
-        {playerContext.isGameMaster && props.lobby.buzzingPlayer && (
-          <HandleAnswer
-            lobbyId={props.lobby.id}
-            buzzingPlayerId={props.lobby.buzzingPlayer.userId}
-          />
-        )}
-      </Card>
+    <div className="flex flex-col items-center space-y-2 border px-4 py-2">
+      <div className="text-xl">
+        {props.lobby.open
+          ? "open for buzzing..."
+          : props.lobby.buzzingPlayer
+            ? `${props.lobby.buzzingPlayer.username} buzzed!`
+            : revealResult !== undefined
+              ? `The answer of ${revealResult.playerName} was ${revealResult.correct ? "Correct" : "Incorrect"}`
+              : "Buzzing is CLOSED"}
+      </div>
+      {playerContext.isGameMaster && props.lobby.buzzingPlayer && (
+        <HandleAnswer
+          lobbyId={props.lobby.id}
+          buzzingPlayerId={props.lobby.buzzingPlayer.userId}
+        />
+      )}
     </div>
   );
 };

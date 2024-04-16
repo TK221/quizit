@@ -79,20 +79,29 @@ const Lobby = (props: {
         lobbyId: props.lobbyId,
       }}
     >
-      <div className="flex h-full flex-col items-center space-y-4 p-4">
-        <h1 className="h-20 shrink  text-3xl font-bold">{lobby.name}</h1>
-        <div className="flex grow flex-col items-center space-y-4">
+      <div className="flex h-full w-full flex-col items-center space-y-4 p-4">
+        {/* Title */}
+        <h1 className="h-14 shrink py-2 text-3xl font-bold">{lobby.name}</h1>
+        {/* Controls */}
+        <div>
           <ShowPlayers>
             <Buzzer lobbyId={props.lobbyId} lobbyState={lobby.open} />
           </ShowPlayers>
           <ShowGameMaster>
             <Controll lobbyId={props.lobbyId} />
           </ShowGameMaster>
-          <BuzzInfo pusher={pusher} lobby={lobby} />
+        </div>
+        {/* Informations */}
+        <div className="flex flex-col space-y-2">
           <QuestionCounter
             currentQuestion={lobby.currentQuestion}
             maxQuestions={lobby.settings.maxQuestions}
           />
+          <BuzzInfo pusher={pusher} lobby={lobby} />
+        </div>
+        {/* Display */}
+        <div className="flex w-full grow flex-col space-y-2 overflow-auto px-4 md:w-2/3 lg:w-1/3">
+          <p className="text-center text-lg font-bold">Text Display</p>
           <ShowGameMaster>
             <DisplayInput text={lobby.textDisplay} />
           </ShowGameMaster>
@@ -100,7 +109,8 @@ const Lobby = (props: {
             <Display text={lobby.textDisplay} />
           </ShowPlayers>
         </div>
-        <div>
+        {/* Players */}
+        <div className="w-full">
           {lobby.players.length > 0 ? (
             <PlayerList lobbyId={props.lobbyId} players={lobby.players} />
           ) : (
