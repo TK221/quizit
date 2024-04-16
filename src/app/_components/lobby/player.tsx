@@ -21,7 +21,7 @@ const Player = (props: { lobbyId: string; player: GamePlayer }) => {
   const wrongAnswers = api.lobby.wrongAnswer.useMutation();
 
   return (
-    <Card className="min-w-64">
+    <Card className="m-2 min-w-64">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">
           {props.player.username}

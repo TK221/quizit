@@ -3,15 +3,17 @@ import PlayerComponent from "./player";
 
 const PlayerList = (props: { lobbyId: string; players: Player[] }) => {
   return (
-    <div className="flex space-x-2">
+    <div className="flex">
       <div className="grow" />
-      {props.players.map((player) => (
-        <PlayerComponent
-          lobbyId={props.lobbyId}
-          key={player.userId}
-          player={player}
-        />
-      ))}
+      <div className="flex flex-wrap justify-center">
+        {props.players.map((player) => (
+          <PlayerComponent
+            lobbyId={props.lobbyId}
+            key={player.userId}
+            player={player}
+          />
+        ))}
+      </div>
       <div className="grow" />
     </div>
   );

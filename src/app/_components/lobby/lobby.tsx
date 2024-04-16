@@ -79,7 +79,7 @@ const Lobby = (props: {
         lobbyId: props.lobbyId,
       }}
     >
-      <div className="flex h-full w-full flex-col items-center space-y-4 p-4">
+      <div className="flex w-full flex-col items-center space-y-4 p-4 lg:h-full">
         {/* Title */}
         <h1 className="h-14 shrink py-2 text-3xl font-bold">{lobby.name}</h1>
         {/* Controls */}
@@ -110,7 +110,7 @@ const Lobby = (props: {
           </ShowPlayers>
         </div>
         {/* Players */}
-        <div className="w-full">
+        <div className="w-full overflow-auto">
           {lobby.players.length > 0 ? (
             <PlayerList lobbyId={props.lobbyId} players={lobby.players} />
           ) : (
