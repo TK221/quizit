@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.0](https://github.com/TK221/quizit/compare/v0.6.1...v0.7.0) (2024-04-16)
+
+
+### Features
+
+* add an editable text display for the game master to show to the players ([4aacd2d](https://github.com/TK221/quizit/commit/4aacd2d4c5892686f2ecc94be00b6214decd5ee2))
+* add collapsible for additional lobby settings ([c120052](https://github.com/TK221/quizit/commit/c120052d8699b20666f22ed855192c5b08dc7688))
+* add lobby settings wit correct and wrong answer points ([10eb949](https://github.com/TK221/quizit/commit/10eb949f9d13c9e96d9abf187bc89101e611bfa3))
+* correct and wrong answer button for each player ([d55abf5](https://github.com/TK221/quizit/commit/d55abf56dc3af1ac9c2ec7eef48de986ee728a32))
+* new lobby dashboard ([cd29058](https://github.com/TK221/quizit/commit/cd29058637dbea58063fdb5d62f0b6e69f724d5e))
+* remove mandatory Discord profile email ([a265cb4](https://github.com/TK221/quizit/commit/a265cb4ee68585b029c7195b2b89d55ebd3998d3))
+
 ## [0.6.1](https://github.com/TK221/quizit/compare/v0.6.0...v0.6.1) (2024-04-13)
 
 
