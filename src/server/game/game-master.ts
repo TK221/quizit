@@ -122,3 +122,9 @@ export async function endGame(lobbyId: string): Promise<void> {
 
   Lobby.deleteLobby(lobbyId);
 }
+
+export function updateDisplayText(lobbyId: string, text: string): void {
+  const lobby = Lobby.getLobby(lobbyId);
+
+  lobby.textDisplay = text;
+}

@@ -26,7 +26,7 @@ const Buzzer = (props: { lobbyId: string; lobbyState: boolean }) => {
   return (
     <Button
       variant={props.lobbyState ? "destructive" : "outline"}
-      className="h-52 w-52"
+      className="h-40 w-40"
       onClick={() => handleBuzz()}
     >
       {props.lobbyState ? "BUZZ" : "CLOSED"}

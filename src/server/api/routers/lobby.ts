@@ -168,6 +168,14 @@ export const lobbyRouter = createTRPCRouter({
       canceled: true,
     });
   }),
+
+  updateDisplayText: gameMasterProcedure
+    .input(z.object({ text: z.string().max(500) }))
+    .mutation(async ({ input }) => {
+      GameMaster.updateDisplayText(input.lobbyId, input.text);
+
+      await updateLobby(input.lobbyId);
+    }),
 });
 
 export async function updateLobby(lobbyId: string) {

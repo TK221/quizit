@@ -18,6 +18,7 @@ export interface Lobby {
   open: boolean;
   buzzingPlayer?: Player;
   currentQuestion: number;
+  textDisplay: string;
   settings: LobbySettings;
 }
 
@@ -48,6 +49,7 @@ export function createLobby(
     gameMaster: userId,
     open: false,
     currentQuestion: 1,
+    textDisplay: "",
     settings,
   });
 

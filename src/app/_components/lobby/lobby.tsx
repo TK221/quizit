@@ -17,6 +17,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import ShowGameMaster from "../show-gamemaster";
 import ShowPlayers from "../show-players";
+import DisplayInput from "./display-input";
+import Display from "./display";
 
 const Lobby = (props: {
   pusherSettings: PusherClientSettings;
@@ -91,6 +93,12 @@ const Lobby = (props: {
             currentQuestion={lobby.currentQuestion}
             maxQuestions={lobby.settings.maxQuestions}
           />
+          <ShowGameMaster>
+            <DisplayInput text={lobby.textDisplay} />
+          </ShowGameMaster>
+          <ShowPlayers>
+            <Display text={lobby.textDisplay} />
+          </ShowPlayers>
         </div>
         <div>
           {lobby.players.length > 0 ? (
