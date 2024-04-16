@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import * as Lobby from "./lobby";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
@@ -43,31 +42,39 @@ export function decreasePlayerScore(
   }
 }
 
-export function correctAnswer(lobbyId: string): void {
-  const buzzingPlayer = Lobby.getBuzzingPlayer(lobbyId);
-  if (!buzzingPlayer)
-    throw new TRPCError({ code: "NOT_FOUND", message: "No player buzzing" });
+export function correctAnswer(lobbyId: string, playerId: string): void {
+  const player = Lobby.getPlayer(lobbyId, playerId);
 
-  increasePlayerScore(lobbyId, buzzingPlayer.userId, 3);
-  buzzingPlayer.correctAnswers += 1;
+  const lobbySettings = Lobby.getLobbySettings(lobbyId);
+
+  increasePlayerScore(
+    lobbyId,
+    player.userId,
+    lobbySettings.correctAnswerPoints,
+  );
+  player.correctAnswers += 1;
   nextQuestion(lobbyId);
 
   Lobby.resetBuzzingPlayer(lobbyId);
 }
 
-export function wrongAnswer(lobbyId: string): void {
-  const buzzingPlayer = Lobby.getBuzzingPlayer(lobbyId);
-  if (!buzzingPlayer)
-    throw new TRPCError({ code: "NOT_FOUND", message: "No player buzzing" });
+export function wrongAnswer(lobbyId: string, playerId: string): void {
+  const wrongAnswerPlayer = Lobby.getPlayer(lobbyId, playerId);
 
-  buzzingPlayer.wrongAnswers += 1;
+  wrongAnswerPlayer.wrongAnswers += 1;
 
   const players = Lobby.getPlayers(lobbyId);
 
+  const lobbySettings = Lobby.getLobbySettings(lobbyId);
+
   // Increase score for all players except the one who buzzed
   players.forEach((player) => {
-    if (player.userId !== buzzingPlayer.userId)
-      increasePlayerScore(lobbyId, player.userId, 1);
+    if (player.userId !== wrongAnswerPlayer.userId)
+      increasePlayerScore(
+        lobbyId,
+        player.userId,
+        lobbySettings.wrongAnswerPoints,
+      );
   });
 
   Lobby.resetBuzzingPlayer(lobbyId);
@@ -114,4 +121,10 @@ export async function endGame(lobbyId: string): Promise<void> {
   }
 
   Lobby.deleteLobby(lobbyId);
+}
+
+export function updateDisplayText(lobbyId: string, text: string): void {
+  const lobby = Lobby.getLobby(lobbyId);
+
+  lobby.textDisplay = text;
 }

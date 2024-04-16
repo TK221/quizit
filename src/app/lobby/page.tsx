@@ -17,7 +17,8 @@ const LobbyMenu = () => {
   const lobbyId = searchParams.get("lobbyId");
 
   return (
-    <div className="flex h-full items-center justify-center">
+    <div className="flex h-full flex-col items-center">
+      <div className="grow"></div>
       <Tabs defaultValue="join" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="join">Join Lobby</TabsTrigger>
@@ -30,6 +31,7 @@ const LobbyMenu = () => {
           <CreateLobby />
         </TabsContent>
       </Tabs>
+      <div className="grow"></div>
     </div>
   );
 };
