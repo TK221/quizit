@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/TK221/quizit/compare/v0.7.1...v0.8.0) (2024-04-16)
+
+
+### Features
+
+* wrap players ([24567ca](https://github.com/TK221/quizit/commit/24567ca6ecae2b6138c2467683b2f0b0bbf8b8bc))
+
 ## [0.7.1](https://github.com/TK221/quizit/compare/v0.7.0...v0.7.1) (2024-04-16)
 
 
