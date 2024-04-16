@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/TK221/quizit/compare/v0.7.0...v0.7.1) (2024-04-16)
+
+
+### Bug Fixes
+
+* update Dockerfile to include .yarnrc.yml ([fdeb62c](https://github.com/TK221/quizit/commit/fdeb62c22c89094bb46aa6dbf2dfb32fa99da784))
+
 ## [0.7.0](https://github.com/TK221/quizit/compare/v0.6.1...v0.7.0) (2024-04-16)
 
 
