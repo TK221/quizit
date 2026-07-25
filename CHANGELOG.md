@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/TK221/quizit/compare/v0.8.0...v0.9.0) (2026-07-25)
+
+
+### Features
+
+* enhance Dockerfile, add license, and update README with detailed instructions ([#39](https://github.com/TK221/quizit/issues/39)) ([ce35a17](https://github.com/TK221/quizit/commit/ce35a171443f9296734780dbb122a27306160105))
+
 ## [0.8.0](https://github.com/TK221/quizit/compare/v0.7.1...v0.8.0) (2024-04-16)
 
 
