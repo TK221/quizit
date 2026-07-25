@@ -1,10 +1,9 @@
-version: "3"
 services:
   nextjs:
     build:
       context: .
     ports:
-      - 3000:3000
+      - "3000:3000"
     environment:
       NEXTAUTH_SECRET: "NEXTAUTHSECRET"
       NEXTAUTH_URL: "http://localhost:3000"
@@ -19,20 +18,28 @@ services:
       CLIENT_PUSHER_APP_HOST: "localhost"
       CLIENT_PUSHER_APP_PORT: 6001
     depends_on:
-      - db
-      - pusher
+      db:
+        condition: service_healthy
+      pusher:
+        condition: service_started
 
   db:
-    image: postgres
-    restart: always
+    image: postgres:16-alpine
+    restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
       POSTGRES_PASSWORD: DBPASSWORD
       POSTGRES_DB: quizit
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d quizit"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   pusher:
     image: "quay.io/soketi/soketi:1.4-16-debian"
+    restart: unless-stopped
     environment:
       - SOKETI_DEFAULT_APP_ID=REPLACE_WITH_YOUR_APP_ID
       - SOKETI_DEFAULT_APP_KEY=REPLACE_WITH_YOUR_APP_KEY
